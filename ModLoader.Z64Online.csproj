@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>ModLoader.Z64Online</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Deterministic>false</Deterministic>
+	<AssemblyVersion>0.0.*</AssemblyVersion>
+	<Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ModLoader.API\ModLoader.API.csproj" />
+    <ProjectReference Include="..\..\ModLoader.Build\ModLoader.Build.csproj" />
+    <ProjectReference Include="..\..\ModLoader.CLI\ModLoader.CLI.csproj" />
+    <ProjectReference Include="..\..\ModLoader.Core\ModLoader.Core.csproj" />
+    <Reference Include="ImGui.NET.API">
+      <HintPath>..\..\..\ImGui.NET\bin\Release\ImGui.NET.API\net6.0\ImGui.NET.API.dll</HintPath>
+    </Reference>
+	  <Reference Include="ModLoader.OoT.API">
+	    <HintPath>..\ModLoader.OoT\ModLoader.OoT\bin\Debug\net7.0\ModLoader.OoT.API.dll</HintPath>
+	  </Reference>
+	 <Using Include="System.Byte" Alias="u8" />
+	 <Using Include="System.UInt16" Alias="u16" />
+	 <Using Include="System.UInt32" Alias="u32" />
+	 <Using Include="System.UInt64" Alias="u64" />
+	 <Using Include="System.SByte" Alias="s8" />
+	 <Using Include="System.Int16" Alias="s16" />
+	 <Using Include="System.Int32" Alias="s32" />
+	 <Using Include="System.Int64" Alias="s64" />
+	 <Using Include="System.Half" Alias="f16" />
+	 <Using Include="System.Single" Alias="f32" />
+	 <Using Include="System.Double" Alias="f64" />
+	 <Using Include="System.IntPtr" Alias="Ptr" />
+	 <Using Include="ModLoader.API" />
+  </ItemGroup>
+
+</Project>
