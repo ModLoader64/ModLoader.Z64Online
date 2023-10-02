@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace ModLoader.Z64Online;
+namespace Z64Online;
 
 [Plugin("Z64Online")]
 public class Z64Online : IPlugin

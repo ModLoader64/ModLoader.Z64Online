@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ModLoader.Z64Online;
+namespace Z64Online;
 
 [Configuration]
 public class Configuration

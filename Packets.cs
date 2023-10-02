@@ -1,4 +1,4 @@
-﻿namespace ModLoader.Z64Online;
+﻿namespace Z64Online;
 
 public class RupeePacket
 {

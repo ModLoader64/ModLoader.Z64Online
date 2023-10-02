@@ -1,5 +1,5 @@
 ﻿
-namespace ModLoader.Z64Online
+namespace Z64Online
 {
     class OoTOnlineStorage
     {

@@ -1,14 +1,14 @@
-﻿using ModLoader.OoT.API;
+﻿using OoT.API;
 
-namespace ModLoader.Z64Online;
+namespace Z64Online;
 
 public class OoTOnline
 {
     public static bool isOpen = true;
-    public static ModLoader.OoT.API.WrapperSaveContext? save;
-    public static ModLoader.OoT.API.WrapperGlobalContext? global;
-    public static ModLoader.OoT.API.WrapperPlayerContext? player;
-    public static ModLoader.OoT.API.Helper? helper;
+    public static OoT.API.WrapperSaveContext? save;
+    public static OoT.API.WrapperGlobalContext? global;
+    public static OoT.API.WrapperPlayerContext? player;
+    public static OoT.API.Helper? helper;
 
     public static InventoryItem[] InventoryTest =
     {
