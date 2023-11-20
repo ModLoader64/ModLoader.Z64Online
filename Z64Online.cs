@@ -1,16 +1,27 @@
 ﻿
 using OoT.API;
+using OoT.API.Enums;
 using Spectre.Console;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace Z64Online;
 
+public class LoadedGames
+{
+    public bool OoT = false;
+    public bool OoTDBG = false;
+    public bool OoTMM = false;
+    public bool MM = false;
+}
+
 [Plugin("Z64Online")]
 public class Z64Online : IPlugin
 {
     public static Configuration? Configuration { get; set; }
     public static N64RomHeader romHeader;
+    public static LoadedGames currentGame = new LoadedGames();
+
 
     public static void Init()
     {
@@ -42,26 +53,4 @@ public class Z64Online : IPlugin
         return romHeader;
     }
 
-    [EventHandler("OnRomLoaded")]
-    public static void OnRomLoaded(EventRomLoaded e)
-    {
-        N64RomHeader romHeader = GetRomHeader(e.rom);
-        Console.WriteLine("Z64Online - OnRomLoaded() ROM Header: " + romHeader.id);
-        if (romHeader.id == OoT.API.Enums.RomRegions.NTSC_OOT && romHeader.version == (int)OoT.API.Enums.ROM_VERSIONS.N0)
-        {
-            Console.WriteLine("OoT 1.0 NTSC");
-            OoTVersionPointers.SaveContext = (Ptr)0x8011A5D0;
-            OoTVersionPointers.GlobalContext = (Ptr)0x801C84A0;
-            OoTVersionPointers.PlayerContext = (Ptr)0x801DAA30;
-        } else if (romHeader.id == OoT.API.Enums.RomRegions.DEBUG_OOT)
-        {
-            Console.WriteLine("OoT DEBUG");
-            OoTVersionPointers.SaveContext = (Ptr)0x8015E660;
-            OoTVersionPointers.GlobalContext = (Ptr)0x80212020;
-            OoTVersionPointers.PlayerContext = (Ptr)0x802245B0;
-        } else if (romHeader.id == OoT.API.Enums.RomRegions.NTSC_MM)
-        {
-            Console.WriteLine("MM 1.0 NTSC");
-        }
-    }
 }

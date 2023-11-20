@@ -1,17 +1,17 @@
 ﻿
 namespace Z64Online
 {
-    internal class OoTOnlineStorageClient
+    public class OoTOnlineStorageClient : OoTOnlineStorageBase
     {
-        string autoSaveHash = "!";
-        string keySaveHash = "!";
-        string lastPushHash = "!";
+        public string autoSaveHash = "!";
+        public string keySaveHash = "!";
+        public string lastPushHash = "!";
 
-        int world = 0;
-        int lastBeans = 0;
-        int lastKnownSkullCount = -1;
+        public int world = 0;
+        public int lastBeans = 0;
+        public int lastKnownSkullCount = -1;
 
-        bool first_time_sync = false;
+        public bool first_time_sync = false;
 
     }
 }

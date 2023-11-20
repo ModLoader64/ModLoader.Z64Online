@@ -1,4 +1,5 @@
 ﻿using OoT.API;
+using OoT.API.Enums;
 
 namespace Z64Online;
 
@@ -10,12 +11,22 @@ public class OoTOnline : IBootstrapFilter
     public static OoT.API.WrapperSaveContext? save;
     public static OoT.API.WrapperGlobalContext? global;
     public static OoT.API.WrapperPlayerContext? player;
-    public static OoT.API.Helper? helper;
-
+    public static Helper? helper;
+    public static bool isRando = false;
+    
     public static bool DoesLoad(byte[] e)
     {
         romHeader = Z64Online.GetRomHeader(e);
-        return romHeader?.id == OoT.API.Enums.RomRegions.NTSC_OOT || romHeader?.id == OoT.API.Enums.RomRegions.DEBUG_OOT;
+
+        if (romHeader?.id == OoT.API.Enums.RomRegions.NTSC_OOT)
+        {
+            Z64Online.currentGame.OoT = true;
+        }
+        else if (romHeader?.id == OoT.API.Enums.RomRegions.DEBUG_OOT)
+        {
+            Z64Online.currentGame.OoTDBG = true;
+        }
+        return Z64Online.currentGame.OoT || Z64Online.currentGame.OoTDBG;
     }
 
     public static InventoryItem[] InventoryTest =
@@ -86,7 +97,7 @@ public class OoTOnline : IBootstrapFilter
     public static void OnTick(EventNewFrame e)
     {
         if (helper.isTitleScreen() || helper.isPaused()) return;
-
+        //ModLoader.API.NetworkSenders.Client.SendPacket();
     }
 
     [OnViUpdate]
@@ -216,16 +227,16 @@ public class OoTOnline : IBootstrapFilter
 
     }
 
-    /*    [ServerNetworkHandler(typeof(RupeePacket))]
-        public static void Server_RupeePacketGet(RupeePacket packet)
-        {
+    [ServerNetworkHandler(typeof(Z64O_RupeePacket))]
+    public static void Server_RupeePacketGet(Z64O_RupeePacket packet)
+    {
 
-        }
+    }
 
-        [ClientNetworkHandler(typeof(RupeePacket))]
-        public static void Client_RupeePacketGet(RupeePacket packet)
-        {
+    [ClientNetworkHandler(typeof(Z64O_RupeePacket))]
+    public static void Client_RupeePacketGet(Z64O_RupeePacket packet)
+    {
 
-        }*/
+    }
 
 }

@@ -1,77 +1,82 @@
 ﻿
 using OoT.API;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Z64Online
 {
-    class OoTOnlineStorage
+    public class OoTOnlineStorage
     {
-        NetworkPlayer[] networkPlayerInstances = { };
+        public NetworkPlayer[] networkPlayerInstances = { };
+        public object players = new { };
+        public OotOnlineSave_Server[] worlds = { };
     }
 
-    class OoTOnlineSave
+    public class OoTOSyncSave
     {
-
+        public bool isOoTR;
+        public bool isVanilla;
+        public OoTOnlineInventorySync? inventory;
     }
 
-    class OoTOnlineInventory
+    public class OoTOnlineInventorySync
     {
-        InventoryItem dekuSticks;
-        InventoryItem dekuNuts;
-        InventoryItem bombs;
-        InventoryItem bow;
-        InventoryItem fireArrows;
-        InventoryItem dinsFire;
-        InventoryItem slingshot;
-        InventoryItem ocarina;
-        InventoryItem bombchus;
-        InventoryItem hookshot;
-        InventoryItem iceArrows;
-        InventoryItem faroresWind;
-        InventoryItem boomerang;
-        InventoryItem lensOfTruth;
-        InventoryItem magicBeans;
-        InventoryItem megatonHammer;
-        InventoryItem lightArrows;
-        InventoryItem nayrusLove;
-        InventoryItem bottle0;
-        InventoryItem bottle1;
-        InventoryItem bottle2;
-        InventoryItem bottle3;
-        InventoryItem childTrade;
-        InventoryItem adultTrade;
+        public InventoryItem dekuSticks;
+        public InventoryItem dekuNuts;
+        public InventoryItem bombs;
+        public InventoryItem bow;
+        public InventoryItem fireArrows;
+        public InventoryItem dinsFire;
+        public InventoryItem slingshot;
+        public InventoryItem ocarina;
+        public InventoryItem bombchus;
+        public InventoryItem hookshot;
+        public InventoryItem iceArrows;
+        public InventoryItem faroresWind;
+        public InventoryItem boomerang;
+        public InventoryItem lensOfTruth;
+        public InventoryItem magicBeans;
+        public InventoryItem megatonHammer;
+        public InventoryItem lightArrows;
+        public InventoryItem nayrusLove;
+        public InventoryItem bottle1;
+        public InventoryItem bottle2;
+        public InventoryItem bottle3;
+        public InventoryItem bottle4;
+        public InventoryItem childTrade;
+        public InventoryItem adultTrade;
+
+        public bool kokiriSword;
+        public bool masterSword;
+        public bool giantsKnife;
+        public bool biggoronSword;
+
+        public bool dekuShield;
+        public bool hylianShield;
+        public bool mirrorShield;
+
+        public bool kokiriTunic;
+        public bool goronTunic;
+        public bool zoraTunic;
+
+        public bool kokiriBoots;
+        public bool ironBoots;
+        public bool hoverBoots;
     }
 
     class OoTOnlineQuestStatus
     {
-        u16 equipment;
-        u32 upgrades;
-        u32 questItems;
-        u16 gsTokens;
 
     }
 
-    /*  InventoryItem.DEKU_STICKS ,
-        InventoryItem.DEKU_NUTS,
-        InventoryItem.BOMBS,
-        InventoryItem.FAIRY_BOW,
-        InventoryItem.FIRE_ARROWS,
-        InventoryItem.DINS_FIRE,
-        InventoryItem.FAIRY_SLINGSHOT,
-        InventoryItem.FAIRY_OCARINA,
-        InventoryItem.BOMBCHUS,
-        InventoryItem.HOOKSHOT,
-        InventoryItem.ICE_ARROWS,
-        InventoryItem.FARORES_WIND,
-        InventoryItem.BOOMERANG,
-        InventoryItem.LENS_OF_TRUTH,
-        InventoryItem.MAGIC_BEANS,
-        InventoryItem.MEGATON_HAMMER,
-        InventoryItem.LIGHT_ARROWS,
-        InventoryItem.NAYRUS_LOVE,
-        InventoryItem.RED_POTION,
-        InventoryItem.RED_POTION,
-        InventoryItem.RED_POTION,
-        InventoryItem.RED_POTION,
-        InventoryItem.COJIRO ,
-        InventoryItem.POCKET_EGG ,*/
+    public class OOTKeyRingServer : IKeyRing
+    {
+        public byte[] keys { get; set; }
+    }
+
+    public class OotOnlineSave_Server
+    {
+        public bool saveGameSetup = false;
+        public OoTOSyncSave save = new OoTOSyncSave();
+        public IKeyRing keys = new OOTKeyRingServer();
+    }
 }
