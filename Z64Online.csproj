@@ -17,7 +17,7 @@
     <ProjectReference Include="..\..\ModLoader.Core\ModLoader.Core.csproj" />
     <ProjectReference Include="..\LibOoT\OoT.API\OoT.API.csproj" />
     <Reference Include="ImGui.NET.API">
-      <HintPath>..\..\..\ImGui.NET\bin\Release\ImGui.NET.API\net6.0\ImGui.NET.API.dll</HintPath>
+      <HintPath>..\..\ModLoader.API\bin\Debug\net7.0\ImGui.NET.API.dll</HintPath>
     </Reference>
 	 <Using Include="System.Byte" Alias="u8" />
 	 <Using Include="System.UInt16" Alias="u16" />
