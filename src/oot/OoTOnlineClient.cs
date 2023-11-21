@@ -14,10 +14,10 @@ namespace Z64Online
     public class OoTOnlineClient : IBootstrapFilter
     {
 
-        public static OoTOnlineStorageClient clientStorage = new OoTOnlineStorageClient();
+        public static OoTOnlineStorageClient clientStorage = new OoTOnlineStorageClient(new OoTOSaveData());
 
         static int syncTimer = 0;
-        static int syncTimerMax = 60 * 20;
+        static int syncTimerMax = 20 * 20;
 
         public static bool DoesLoad(byte[] e)
         {
@@ -32,10 +32,10 @@ namespace Z64Online
         [OnInit]
         public static void OnInit(EventPluginsLoaded evt)
         {
-            Console.WriteLine("OoTOnlineClient: Init");
+            DebugFlags.IsDebugEnabled = true;
+            //Console.WriteLine("OoTOnlineClient: Init");
+            //Console.WriteLine($"Nickname: {NetworkClientData.me.nickname}");
 
-            NetworkClientData.me.data = new test();
-            NetworkClientData.me.data.world = -1;
         }
 
         [OnEmulatorStart]
@@ -46,23 +46,26 @@ namespace Z64Online
 
         public static void UpdateInventory()
         {
-            Console.WriteLine("UpdateInventory");
-            if (OoTOnline.helper.isTitleScreen() || OoTOnline.helper.isSceneNumberValid() || OoTOnline.helper.isPaused() || !clientStorage.first_time_sync) return;
+            if (OoTOnline.helper.isTitleScreen() || !OoTOnline.helper.isSceneNumberValid() || OoTOnline.helper.isPaused() || !clientStorage.first_time_sync) return;
             //if (OoTOnline.helper.Player_InBlockingCsMode() || !this.LobbyConfig.data_syncing) return;
 
             OoTOSyncSave save = clientStorage.saveManager.CreateSave();
 
             if (syncTimer > syncTimerMax)
             {
-                clientStorage.lastPushHash = clientStorage.saveManager.GetHashCode().ToString();
+                clientStorage.lastPushHash = "Reset".GetHashCode().ToString();
                 Console.WriteLine("Forcing resync due to timeout.");
+                syncTimer = 0;
             }
             if (clientStorage.lastPushHash != clientStorage.saveManager.hash)
             {
-                Z64O_UpdateSaveDataPacket packet = new Z64O_UpdateSaveDataPacket(save, clientStorage.world, NetworkClientData.me);
-                NetworkSenders.Client.SendPacket(packet, ModLoader.API.NetworkClientData.lobby);
+                
+                Z64O_UpdateSaveDataPacket packet = new Z64O_UpdateSaveDataPacket(save, clientStorage.world, NetworkClientData.me, NetworkClientData.lobby);
+                NetworkSenders.Client.SendPacket(packet, NetworkClientData.lobby);
                 clientStorage.lastPushHash = clientStorage.saveManager.hash;
                 syncTimer = 0;
+
+                Console.WriteLine("UpdateInventory Hash Update");
             }
 
         }
@@ -71,17 +74,19 @@ namespace Z64Online
         // Lobby Setup
         //------------------------------
 
-        [EventHandler("CLIENT_ON_NETWORK_CONNECT")]
+        [EventHandler(NetworkEvents.CLIENT_ON_NETWORK_CONNECT)]
         public static void OnConnect(EventClientNetworkConnection e)
         {
             Console.WriteLine("Connected to server.");
             clientStorage.first_time_sync = false;
         }
 
-        [EventHandler("CLIENT_ON_NETWORK_LOBBY_JOIN")]
+        [EventHandler(NetworkEvents.CLIENT_ON_NETWORK_LOBBY_JOIN)]
         public static void OnLobbyJoin(EventClientNetworkLobbyJoined e)
         {
-            Console.WriteLine("FUCK SHIT PISS DICK ASS");
+            Console.WriteLine("Client: OnLobbyJoin");
+            NetworkClientData.me.data = new test();
+            //NetworkClientData.me.data.world = -1;
             clientStorage.first_time_sync = false;
         }
 
@@ -89,14 +94,17 @@ namespace Z64Online
         [ClientNetworkHandler(typeof(Z64O_DownloadResponsePacket))]
         public static void OnDownloadPacket_Client(Z64O_DownloadResponsePacket packet)
         {
+            Console.WriteLine("Client: OnDownloadPacket_Client");
             if (OoTOnline.helper.isTitleScreen() || !OoTOnline.helper.isSceneNumberValid())
             {
                 return;
             }
             if (packet.save != null)
             {
+                Console.WriteLine("Syncing save with server.");
                 clientStorage.saveManager.forceOverrideSave(packet.save, OoTOnline.save);
                 clientStorage.saveManager.CreateSave();
+                
                 clientStorage.lastPushHash = clientStorage.saveManager.hash;
             }
             else
@@ -135,10 +143,11 @@ namespace Z64Online
             if (OoTOnline.helper.isTitleScreen() || !OoTOnline.helper.isSceneNumberValid()) { return; }
             if (packet.world != clientStorage.world) { return; }
             if (!clientStorage.first_time_sync) { return; }
-
+            Console.WriteLine("OnSaveUpdate");
             clientStorage.saveManager.ApplySave(packet.save);
             // Update hash.
             clientStorage.saveManager.CreateSave();
+            
             clientStorage.lastPushHash = clientStorage.saveManager.hash;
 
         }

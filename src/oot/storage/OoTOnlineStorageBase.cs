@@ -8,6 +8,9 @@ namespace Z64Online
 {
     public class OoTOnlineStorageBase
     {
-        public OoTOSaveData? saveManager;
+        public OoTOSaveData saveManager;
+        public OoTOnlineStorageBase(OoTOSaveData saveManger) {
+            this.saveManager = saveManger;
+        }
     }
 }

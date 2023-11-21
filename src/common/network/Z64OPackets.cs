@@ -19,6 +19,18 @@ public class Z64O_ScenePacket
     }
 }
 
+public class Z64O_ErrorPacket
+{
+    public string message;
+    public string lobby;
+
+    public Z64O_ErrorPacket(string message, string lobby)
+    {
+        this.message = message;
+        this.lobby = lobby;
+    }
+}
+
 public class Z64O_DownloadResponsePacket
 {
     public OoTOSyncSave save { get; set; }
@@ -26,9 +38,10 @@ public class Z64O_DownloadResponsePacket
     public string lobby { get; set; }
     public NetworkPlayer player { get; set; }
 
-    public Z64O_DownloadResponsePacket(string lobby)
+    public Z64O_DownloadResponsePacket(string lobby, NetworkPlayer player)
     {
         this.lobby = lobby;
+        this.player = player;
     }
 }
 
@@ -50,15 +63,15 @@ public class Z64O_UpdateSaveDataPacket
 {
     public OoTOSyncSave save { get; set; }
     public int world { get; set; }
-    public string lobby { get; set; }
     public NetworkPlayer player { get; set; }
+    public string lobby { get; set; }
 
-    public Z64O_UpdateSaveDataPacket(OoTOSyncSave save, int world, NetworkPlayer player)
+    public Z64O_UpdateSaveDataPacket(OoTOSyncSave save, int world, NetworkPlayer player, string lobby)
     {
         this.save = save;
         this.world = world;
-        this.lobby = lobby;
         this.player = player;
+        this.lobby = lobby;
     }
 }
 

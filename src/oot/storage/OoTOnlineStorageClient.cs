@@ -13,5 +13,8 @@ namespace Z64Online
 
         public bool first_time_sync = false;
 
+        public OoTOnlineStorageClient(OoTOSaveData saveManger) : base(saveManger)
+        {
+        }
     }
 }
