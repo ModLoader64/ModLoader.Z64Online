@@ -4,63 +4,78 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Z64Online
 {
-    public class OoTOnlineStorage
+    public class OoTOnlineStorage : OoTOnlineStorageBase
     {
+        public string lobby;
         public NetworkPlayer[] networkPlayerInstances = { };
-        public object players = new { };
+        public PlayerSceneServer[] players;
         public OotOnlineSave_Server[] worlds = { };
+
+        public OoTOnlineStorage(string lobby)
+        {
+            this.lobby = lobby;
+        }
     }
 
+    public class PlayerSceneServer
+    {
+        public string uuid;
+        public int scene;
+
+        public PlayerSceneServer(string uuid, int scene)
+        {
+            this.uuid = uuid;
+            this.scene = scene;
+        }
+    }
     public class OoTOSyncSave
     {
         public bool isOoTR;
         public bool isVanilla;
-        public OoTOnlineInventorySync? inventory;
+        public OoTOnlineInventorySync? inventory = new OoTOnlineInventorySync();
     }
 
     public class OoTOnlineInventorySync
     {
-        public InventoryItem dekuSticks;
-        public InventoryItem dekuNuts;
-        public InventoryItem bombs;
-        public InventoryItem bow;
-        public InventoryItem fireArrows;
-        public InventoryItem dinsFire;
-        public InventoryItem slingshot;
-        public InventoryItem ocarina;
-        public InventoryItem bombchus;
-        public InventoryItem hookshot;
-        public InventoryItem iceArrows;
-        public InventoryItem faroresWind;
-        public InventoryItem boomerang;
-        public InventoryItem lensOfTruth;
-        public InventoryItem magicBeans;
-        public InventoryItem megatonHammer;
-        public InventoryItem lightArrows;
-        public InventoryItem nayrusLove;
-        public InventoryItem bottle1;
-        public InventoryItem bottle2;
-        public InventoryItem bottle3;
-        public InventoryItem bottle4;
-        public InventoryItem childTrade;
-        public InventoryItem adultTrade;
+        public InventoryItem dekuSticks = InventoryItem.NONE;
+        public InventoryItem dekuNuts = InventoryItem.NONE;
+        public InventoryItem bombs = InventoryItem.NONE;
+        public InventoryItem bow = InventoryItem.NONE;
+        public InventoryItem fireArrows = InventoryItem.NONE;
+        public InventoryItem dinsFire = InventoryItem.NONE;
+        public InventoryItem slingshot = InventoryItem.NONE;
+        public InventoryItem ocarina = InventoryItem.NONE;
+        public InventoryItem bombchus = InventoryItem.NONE;
+        public InventoryItem hookshot = InventoryItem.NONE;
+        public InventoryItem iceArrows = InventoryItem.NONE;
+        public InventoryItem faroresWind = InventoryItem.NONE;
+        public InventoryItem boomerang = InventoryItem.NONE;
+        public InventoryItem lensOfTruth = InventoryItem.NONE;
+        public InventoryItem magicBeans = InventoryItem.NONE;
+        public InventoryItem megatonHammer = InventoryItem.NONE;
+        public InventoryItem lightArrows = InventoryItem.NONE;
+        public InventoryItem nayrusLove = InventoryItem.NONE;
+        public InventoryItem bottle1 = InventoryItem.NONE;
+        public InventoryItem bottle2 = InventoryItem.NONE;
+        public InventoryItem bottle3 = InventoryItem.NONE;
+        public InventoryItem bottle4 = InventoryItem.NONE;
+        public InventoryItem childTrade = InventoryItem.NONE;
+        public InventoryItem adultTrade = InventoryItem.NONE;
 
-        public bool kokiriSword;
-        public bool masterSword;
-        public bool giantsKnife;
-        public bool biggoronSword;
+        public bool kokiriSword = false;
+        public bool masterSword = false;
+        public bool giantsKnife = false;
+        public bool biggoronSword = false;
+        public bool dekuShield = false;
+        public bool hylianShield = false;
+        public bool mirrorShield = false;
+        public bool kokiriTunic = false;
+        public bool goronTunic = false;
+        public bool zoraTunic = false;
+        public bool kokiriBoots = false;
+        public bool ironBoots = false;
+        public bool hoverBoots = false;
 
-        public bool dekuShield;
-        public bool hylianShield;
-        public bool mirrorShield;
-
-        public bool kokiriTunic;
-        public bool goronTunic;
-        public bool zoraTunic;
-
-        public bool kokiriBoots;
-        public bool ironBoots;
-        public bool hoverBoots;
     }
 
     class OoTOnlineQuestStatus

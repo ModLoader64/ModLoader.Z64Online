@@ -1,5 +1,6 @@
 ﻿using OoT.API;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Z64Online
 {
@@ -15,6 +16,45 @@ namespace Z64Online
             hash = this.GetHashCode().ToString();
 
             return syncSave;
+        }
+
+        public void ApplySave(OoTOSyncSave save)
+        {
+
+        }
+
+        public void forceOverrideSave(OoTOSyncSave incoming, WrapperSaveContext save)
+        {
+            OverrideInventory(incoming.inventory, save.inventory);
+
+        }
+
+        public void OverrideInventory(OoTOnlineInventorySync incoming, WrapperInventory save)
+        {
+            save.InventoryItems.SetItemInSlot(InventorySlot.DEKU_STICKS, incoming.dekuSticks);
+            save.InventoryItems.SetItemInSlot(InventorySlot.DEKU_NUTS, incoming.dekuNuts);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOMBS, incoming.bombs);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FAIRY_BOW, incoming.bow);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FIRE_ARROWS, incoming.fireArrows);
+            save.InventoryItems.SetItemInSlot(InventorySlot.DINS_FIRE, incoming.dinsFire);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FAIRY_SLINGSHOT, incoming.slingshot);
+            save.InventoryItems.SetItemInSlot(InventorySlot.OCARINA, incoming.ocarina);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOMBCHUS, incoming.bombchus);
+            save.InventoryItems.SetItemInSlot(InventorySlot.HOOKSHOT, incoming.hookshot);
+            save.InventoryItems.SetItemInSlot(InventorySlot.ICE_ARROWS, incoming.iceArrows);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FARORES_WIND, incoming.faroresWind);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOOMERANG, incoming.boomerang);
+            save.InventoryItems.SetItemInSlot(InventorySlot.LENS_OF_TRUTH, incoming.lensOfTruth);
+            save.InventoryItems.SetItemInSlot(InventorySlot.MAGIC_BEANS, incoming.magicBeans);
+            save.InventoryItems.SetItemInSlot(InventorySlot.MEGATON_HAMMER, incoming.megatonHammer);
+            save.InventoryItems.SetItemInSlot(InventorySlot.LIGHT_ARROWS, incoming.lightArrows);
+            save.InventoryItems.SetItemInSlot(InventorySlot.NAYRUS_LOVE, incoming.nayrusLove);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE1, incoming.bottle1);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE2, incoming.bottle2);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE3, incoming.bottle3);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE4, incoming.bottle4);
+            save.InventoryItems.SetItemInSlot(InventorySlot.CHILD_TRADE_ITEM, incoming.childTrade);
+            save.InventoryItems.SetItemInSlot(InventorySlot.ADULT_TRADE_ITEM, incoming.adultTrade);
         }
 
         public OoTOnlineInventorySync CreateInventory(OoTOnlineInventorySync sync, WrapperInventory save)
@@ -45,6 +85,34 @@ namespace Z64Online
             sync.adultTrade = save.InventoryItems.GetItemInSlot(OoT.API.InventorySlot.ADULT_TRADE_ITEM);
 
             return sync;
+        }
+
+        public void ApplyInventory(WrapperInventory save, OoTOnlineInventorySync incoming)
+        {
+            save.InventoryItems.SetItemInSlot(InventorySlot.DEKU_STICKS, incoming.dekuSticks);
+            save.InventoryItems.SetItemInSlot(InventorySlot.DEKU_NUTS, incoming.dekuNuts);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOMBS, incoming.bombs);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FAIRY_BOW, incoming.bow);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FIRE_ARROWS, incoming.fireArrows);
+            save.InventoryItems.SetItemInSlot(InventorySlot.DINS_FIRE, incoming.dinsFire);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FAIRY_SLINGSHOT, incoming.slingshot);
+            save.InventoryItems.SetItemInSlot(InventorySlot.OCARINA, incoming.ocarina);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOMBCHUS, incoming.bombchus);
+            save.InventoryItems.SetItemInSlot(InventorySlot.HOOKSHOT, incoming.hookshot);
+            save.InventoryItems.SetItemInSlot(InventorySlot.ICE_ARROWS, incoming.iceArrows);
+            save.InventoryItems.SetItemInSlot(InventorySlot.FARORES_WIND, incoming.faroresWind);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOOMERANG, incoming.boomerang);
+            save.InventoryItems.SetItemInSlot(InventorySlot.LENS_OF_TRUTH, incoming.lensOfTruth);
+            save.InventoryItems.SetItemInSlot(InventorySlot.MAGIC_BEANS, incoming.magicBeans);
+            save.InventoryItems.SetItemInSlot(InventorySlot.MEGATON_HAMMER, incoming.megatonHammer);
+            save.InventoryItems.SetItemInSlot(InventorySlot.LIGHT_ARROWS, incoming.lightArrows);
+            save.InventoryItems.SetItemInSlot(InventorySlot.NAYRUS_LOVE, incoming.nayrusLove);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE1, incoming.bottle1);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE2, incoming.bottle2);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE3, incoming.bottle3);
+            save.InventoryItems.SetItemInSlot(InventorySlot.BOTTLE4, incoming.bottle4);
+            save.InventoryItems.SetItemInSlot(InventorySlot.CHILD_TRADE_ITEM, incoming.childTrade);
+            save.InventoryItems.SetItemInSlot(InventorySlot.ADULT_TRADE_ITEM, incoming.adultTrade);
         }
     }
 }

@@ -103,121 +103,125 @@ public class OoTOnline : IBootstrapFilter
     [OnViUpdate]
     public static void OnViUpdate(EventNewVi e)
     {
-        if (ImGui.Begin("OoTOnline"))
+        if (ImGui.BeginMainMenuBar())
         {
-
-            if (ImGui.BeginMenu("Inventory"))
+            if (ImGui.BeginMenu("OoTO"))
             {
-                for (int i = 0; i < 24; i++)
+
+                if (ImGui.BeginMenu("Inventory"))
                 {
-                    string s = ((InventorySlot)i).ToString();
-                    string v = save.inventory.InventoryItems[(InventorySlot)i].ToString("X");
-                    ImGui.Text(s + ": 0x" + v);
-                    ImGui.SameLine();
-                    if (ImGui.Button("Set##" + i))
+                    for (int i = 0; i < 24; i++)
                     {
-                        save.inventory.InventoryItems[(InventorySlot)i] = InventoryTest[i];
+                        string s = ((InventorySlot)i).ToString();
+                        string v = save.inventory.InventoryItems[(InventorySlot)i].ToString("X");
+                        ImGui.Text(s + ": 0x" + v);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##" + i))
+                        {
+                            save.inventory.InventoryItems[(InventorySlot)i] = InventoryTest[i];
+                        }
                     }
+                    ImGui.EndMenu();
                 }
-                ImGui.EndMenu();
+                if (ImGui.BeginMenu("Equipment"))
+                {
+                    ImGui.Text("Kokiri Sword: " + save.inventory.equipment.kokiriSword);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##KokiriSword"))
+                    {
+                        save.inventory.equipment.kokiriSword = !save.inventory.equipment.kokiriSword;
+                    }
+
+                    ImGui.Text("Master Sword: " + save.inventory.equipment.masterSword);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##MasterSword"))
+                    {
+                        save.inventory.equipment.masterSword = !save.inventory.equipment.masterSword;
+                    }
+
+                    ImGui.Text("Giants Knife: " + save.inventory.equipment.giantsKnife);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##GiantsKnife"))
+                    {
+                        save.inventory.equipment.giantsKnife = !save.inventory.equipment.giantsKnife;
+                    }
+                    ImGui.SameLine();
+                    ImGui.Text("Biggoron Sword: " + save.inventory.equipment.biggoronSword);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##BiggoronSword"))
+                    {
+                        save.inventory.equipment.biggoronSword = !save.inventory.equipment.biggoronSword;
+                    }
+
+                    ImGui.Text("Deku Shield: " + save.inventory.equipment.dekuShield);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##DekuShield"))
+                    {
+                        save.inventory.equipment.dekuShield = !save.inventory.equipment.dekuShield;
+                    }
+
+                    ImGui.Text("Hylian Shield: " + save.inventory.equipment.hylianShield);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##hylianShield"))
+                    {
+                        save.inventory.equipment.hylianShield = !save.inventory.equipment.hylianShield;
+                    }
+
+                    ImGui.Text("Mirror Sword: " + save.inventory.equipment.mirrorShield);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##mirrorShield"))
+                    {
+                        save.inventory.equipment.mirrorShield = !save.inventory.equipment.mirrorShield;
+                    }
+
+                    ImGui.Text("Kokiri Tunic: " + save.inventory.equipment.kokiriTunic);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##kokiriTunic"))
+                    {
+                        save.inventory.equipment.kokiriTunic = !save.inventory.equipment.kokiriTunic;
+                    }
+
+                    ImGui.Text("Goron Tunic: " + save.inventory.equipment.goronTunic);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##goronTunic"))
+                    {
+                        save.inventory.equipment.goronTunic = !save.inventory.equipment.goronTunic;
+                    }
+
+                    ImGui.Text("Zora Tunic: " + save.inventory.equipment.zoraTunic);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##zoraTunic"))
+                    {
+                        save.inventory.equipment.zoraTunic = !save.inventory.equipment.zoraTunic;
+                    }
+
+                    ImGui.Text("Kokiri Boots: " + save.inventory.equipment.kokiriBoots);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##kokiriBoots"))
+                    {
+                        save.inventory.equipment.kokiriBoots = !save.inventory.equipment.kokiriBoots;
+                    }
+
+                    ImGui.Text("Iron Boots: " + save.inventory.equipment.ironBoots);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##ironBoots"))
+                    {
+                        save.inventory.equipment.ironBoots = !save.inventory.equipment.ironBoots;
+                    }
+
+                    ImGui.Text("Hover Boots: " + save.inventory.equipment.hoverBoots);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##hoverBoots"))
+                    {
+                        save.inventory.equipment.hoverBoots = !save.inventory.equipment.hoverBoots;
+                    }
+
+                    ImGui.EndMenu();
+                }
+                ImGui.End();
             }
-            if (ImGui.BeginMenu("Equipment"))
-            {
-                ImGui.Text("Kokiri Sword: " + save.inventory.equipment.kokiriSword);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##KokiriSword"))
-                {
-                    save.inventory.equipment.kokiriSword = !save.inventory.equipment.kokiriSword;
-                }
-
-                ImGui.Text("Master Sword: " + save.inventory.equipment.masterSword);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##MasterSword"))
-                {
-                    save.inventory.equipment.masterSword = !save.inventory.equipment.masterSword;
-                }
-
-                ImGui.Text("Giants Knife: " + save.inventory.equipment.giantsKnife);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##GiantsKnife"))
-                {
-                    save.inventory.equipment.giantsKnife = !save.inventory.equipment.giantsKnife;
-                }
-                ImGui.SameLine();
-                ImGui.Text("Biggoron Sword: " + save.inventory.equipment.biggoronSword);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##BiggoronSword"))
-                {
-                    save.inventory.equipment.biggoronSword = !save.inventory.equipment.biggoronSword;
-                }
-
-                ImGui.Text("Deku Shield: " + save.inventory.equipment.dekuShield);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##DekuShield"))
-                {
-                    save.inventory.equipment.dekuShield = !save.inventory.equipment.dekuShield;
-                }
-
-                ImGui.Text("Hylian Shield: " + save.inventory.equipment.hylianShield);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##hylianShield"))
-                {
-                    save.inventory.equipment.hylianShield = !save.inventory.equipment.hylianShield;
-                }
-
-                ImGui.Text("Mirror Sword: " + save.inventory.equipment.mirrorShield);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##mirrorShield"))
-                {
-                    save.inventory.equipment.mirrorShield = !save.inventory.equipment.mirrorShield;
-                }
-
-                ImGui.Text("Kokiri Tunic: " + save.inventory.equipment.kokiriTunic);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##kokiriTunic"))
-                {
-                    save.inventory.equipment.kokiriTunic = !save.inventory.equipment.kokiriTunic;
-                }
-
-                ImGui.Text("Goron Tunic: " + save.inventory.equipment.goronTunic);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##goronTunic"))
-                {
-                    save.inventory.equipment.goronTunic = !save.inventory.equipment.goronTunic;
-                }
-
-                ImGui.Text("Zora Tunic: " + save.inventory.equipment.zoraTunic);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##zoraTunic"))
-                {
-                    save.inventory.equipment.zoraTunic = !save.inventory.equipment.zoraTunic;
-                }
-
-                ImGui.Text("Kokiri Boots: " + save.inventory.equipment.kokiriBoots);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##kokiriBoots"))
-                {
-                    save.inventory.equipment.kokiriBoots = !save.inventory.equipment.kokiriBoots;
-                }
-
-                ImGui.Text("Iron Boots: " + save.inventory.equipment.ironBoots);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##ironBoots"))
-                {
-                    save.inventory.equipment.ironBoots = !save.inventory.equipment.ironBoots;
-                }
-
-                ImGui.Text("Hover Boots: " + save.inventory.equipment.hoverBoots);
-                ImGui.SameLine();
-                if (ImGui.Button("Set##hoverBoots"))
-                {
-                    save.inventory.equipment.hoverBoots = !save.inventory.equipment.hoverBoots;
-                }
-
-                ImGui.EndMenu();
-            }
-            ImGui.End();
         }
+        
     }
 
 
