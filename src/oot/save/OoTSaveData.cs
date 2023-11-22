@@ -1,8 +1,9 @@
 ﻿using OoT.API;
+using OoT;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Z64Online
+namespace Z64Online.OoTOnline
 {
     public class OoTOSaveData
     {
@@ -10,7 +11,7 @@ namespace Z64Online
         public OoTOSyncSave CreateSave()
         {
             OoTOSyncSave syncSave = new OoTOSyncSave();
-            syncSave.inventory = CreateInventory(syncSave.inventory, OoTOnline.save.inventory);
+            syncSave.inventory = CreateInventory(syncSave.inventory, Core.save.inventory);
             hash = ModLoader.API.Utils.GetHashSHA1(ModLoader.API.Utils.ObjectToByteArray(syncSave));
             return syncSave;
         }
@@ -18,7 +19,7 @@ namespace Z64Online
         public void ApplySave(OoTOSyncSave incoming)
         {
             //OoTOSyncSave save = new OoTOSyncSave();
-            //save.inventory = CreateInventory(incoming.inventory, OoTOnline.save.inventory);
+            //save.inventory = CreateInventory(incoming.inventory, Core.save.inventory);
             MergeSave(incoming);
         }
 
@@ -26,7 +27,7 @@ namespace Z64Online
         {
             if(save == null)
             {
-                ApplyInventory(OoTOnline.save.inventory, incoming.inventory);
+                ApplyInventory(Core.save.inventory, incoming.inventory);
             }
             else
             {

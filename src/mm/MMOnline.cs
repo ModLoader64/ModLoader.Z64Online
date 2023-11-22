@@ -1,4 +1,6 @@
-﻿using OoT.API;
+﻿
+using OoT;
+using OoT.API;
 
 namespace Z64Online;
 
@@ -9,7 +11,7 @@ public class MMOnline : IBootstrapFilter
 
     public static bool DoesLoad(byte[] e)
     {
-        N64RomHeader romHeader = Z64Online.GetRomHeader(e);
+        N64RomHeader romHeader = Core.GetRomHeader(e);
         return romHeader.id == OoT.API.Enums.RomRegions.NTSC_MM;
     }
 

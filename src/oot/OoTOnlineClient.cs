@@ -1,14 +1,7 @@
-﻿using Network.Packets;
-using OoT.API;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OoT.API;
+using OoT;
 
-namespace Z64Online
+namespace Z64Online.OoTOnline
 {
     [BootstrapFilter]
     public class OoTOnlineClient : IBootstrapFilter
@@ -21,12 +14,8 @@ namespace Z64Online
 
         public static bool DoesLoad(byte[] e)
         {
+            
             return Z64Online.currentGame.OoT || Z64Online.currentGame.OoTDBG;
-        }
-
-        public class test
-        {
-            public int world { get; set; }
         }
 
         [OnInit]
@@ -46,8 +35,8 @@ namespace Z64Online
 
         public static void UpdateInventory()
         {
-            if (OoTOnline.helper.isTitleScreen() || !OoTOnline.helper.isSceneNumberValid() || OoTOnline.helper.isPaused() || !clientStorage.first_time_sync) return;
-            //if (OoTOnline.helper.Player_InBlockingCsMode() || !this.LobbyConfig.data_syncing) return;
+            if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid() || Core.helper.isPaused() || !clientStorage.first_time_sync) return;
+            //if (Core.helper.Player_InBlockingCsMode() || !this.LobbyConfig.data_syncing) return;
 
             OoTOSyncSave save = clientStorage.saveManager.CreateSave();
 
@@ -85,7 +74,7 @@ namespace Z64Online
         public static void OnLobbyJoin(EventClientNetworkLobbyJoined e)
         {
             Console.WriteLine("Client: OnLobbyJoin");
-            NetworkClientData.me.data = new test();
+            NetworkClientData.me.data = new NTWKPlayerData();
             //NetworkClientData.me.data.world = -1;
             clientStorage.first_time_sync = false;
         }
@@ -95,14 +84,14 @@ namespace Z64Online
         public static void OnDownloadPacket_Client(Z64O_DownloadResponsePacket packet)
         {
             Console.WriteLine("Client: OnDownloadPacket_Client");
-            if (OoTOnline.helper.isTitleScreen() || !OoTOnline.helper.isSceneNumberValid())
+            if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid())
             {
                 return;
             }
             if (packet.save != null)
             {
                 Console.WriteLine("Syncing save with server.");
-                clientStorage.saveManager.forceOverrideSave(packet.save, OoTOnline.save);
+                clientStorage.saveManager.forceOverrideSave(packet.save, Core.save);
                 clientStorage.saveManager.CreateSave();
                 
                 clientStorage.lastPushHash = clientStorage.saveManager.hash;
@@ -140,7 +129,7 @@ namespace Z64Online
         [ClientNetworkHandler(typeof(Z64O_UpdateSaveDataPacket))]
         public static void OnSaveUpdate(Z64O_UpdateSaveDataPacket packet)
         {
-            if (OoTOnline.helper.isTitleScreen() || !OoTOnline.helper.isSceneNumberValid()) { return; }
+            if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid()) { return; }
             if (packet.world != clientStorage.world) { return; }
             if (!clientStorage.first_time_sync) { return; }
             Console.WriteLine("OnSaveUpdate");
@@ -161,7 +150,7 @@ namespace Z64Online
         public static void OnSceneChange(EventSceneChange evt)
         {
             NetworkClientData.me.data.world = clientStorage.world;
-            NetworkSenders.Client.SendPacket(new Z64O_ScenePacket(OoTOnline.global.sceneID, OoTOnline.save.linkAge, NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
+            NetworkSenders.Client.SendPacket(new Z64O_ScenePacket(Core.global.sceneID, Core.save.linkAge, NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
             Console.WriteLine("Client: I moved to scene " + evt.scene + ".");
         }
 
@@ -179,7 +168,7 @@ namespace Z64Online
         [EventHandler("OnAgeChange")]
         public static void OnAgeChange(EventAgeChange evt)
         {
-            NetworkSenders.Client.SendPacket(new Z64O_ScenePacket(OoTOnline.global.sceneID, evt.age, NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
+            NetworkSenders.Client.SendPacket(new Z64O_ScenePacket(Core.global.sceneID, evt.age, NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
         }
 
 
@@ -201,9 +190,9 @@ namespace Z64Online
         [OnFrame]
         public static void OnTick(EventNewFrame e)
         {
-            if (!OoTOnline.helper.isTitleScreen() && OoTOnline.helper.isSceneNumberValid())
+            if (!Core.helper.isTitleScreen() && Core.helper.isSceneNumberValid())
             {
-                if (!OoTOnline.helper.isPaused())
+                if (!Core.helper.isPaused())
                 {
                     if (!clientStorage.first_time_sync) { return; }
                     syncTimer++;

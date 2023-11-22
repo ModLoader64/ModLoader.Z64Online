@@ -2,7 +2,7 @@
 using OoT.API;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Z64Online
+namespace Z64Online.OoTOnline
 {
     public class OoTOnlineStorage : OoTOnlineStorageBase
     {

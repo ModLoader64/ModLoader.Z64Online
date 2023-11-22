@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\ModLoader.CLI\ModLoader.CLI.csproj" />
     <ProjectReference Include="..\..\ModLoader.Core\ModLoader.Core.csproj" />
     <ProjectReference Include="..\LibOoT\OoT.API\OoT.API.csproj" />
+    <ProjectReference Include="..\LibOoT\OoT\OoT.csproj" />
     <Reference Include="ImGui.NET.API">
       <HintPath>..\..\ModLoader.API\bin\Debug\net7.0\ImGui.NET.API.dll</HintPath>
     </Reference>

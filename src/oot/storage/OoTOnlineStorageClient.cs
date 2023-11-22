@@ -1,5 +1,5 @@
 ﻿
-namespace Z64Online
+namespace Z64Online.OoTOnline
 {
     public class OoTOnlineStorageClient : OoTOnlineStorageBase
     {

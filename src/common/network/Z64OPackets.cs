@@ -1,5 +1,6 @@
 ﻿using ModLoader.API;
 using Network.Packets;
+using Z64Online.OoTOnline;
 
 namespace Z64Online;
 
