@@ -91,7 +91,7 @@ namespace Z64Online.OoTOnline
             if (packet.save != null)
             {
                 Console.WriteLine("Syncing save with server.");
-                clientStorage.saveManager.forceOverrideSave(packet.save, Core.save);
+                clientStorage.saveManager.forceOverrideSave(packet.save);
                 clientStorage.saveManager.CreateSave();
                 
                 clientStorage.lastPushHash = clientStorage.saveManager.hash;

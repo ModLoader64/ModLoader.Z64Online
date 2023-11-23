@@ -37,31 +37,13 @@ namespace Z64Online.OoTOnline
 
     public class OoTOnlineInventorySync
     {
-        public InventoryItem dekuSticks = InventoryItem.NONE;
-        public InventoryItem dekuNuts = InventoryItem.NONE;
-        public InventoryItem bombs = InventoryItem.NONE;
-        public InventoryItem bow = InventoryItem.NONE;
-        public InventoryItem fireArrows = InventoryItem.NONE;
-        public InventoryItem dinsFire = InventoryItem.NONE;
-        public InventoryItem slingshot = InventoryItem.NONE;
-        public InventoryItem ocarina = InventoryItem.NONE;
-        public InventoryItem bombchus = InventoryItem.NONE;
-        public InventoryItem hookshot = InventoryItem.NONE;
-        public InventoryItem iceArrows = InventoryItem.NONE;
-        public InventoryItem faroresWind = InventoryItem.NONE;
-        public InventoryItem boomerang = InventoryItem.NONE;
-        public InventoryItem lensOfTruth = InventoryItem.NONE;
-        public InventoryItem magicBeans = InventoryItem.NONE;
-        public InventoryItem megatonHammer = InventoryItem.NONE;
-        public InventoryItem lightArrows = InventoryItem.NONE;
-        public InventoryItem nayrusLove = InventoryItem.NONE;
-        public InventoryItem bottle1 = InventoryItem.NONE;
-        public InventoryItem bottle2 = InventoryItem.NONE;
-        public InventoryItem bottle3 = InventoryItem.NONE;
-        public InventoryItem bottle4 = InventoryItem.NONE;
-        public InventoryItem childTrade = InventoryItem.NONE;
-        public InventoryItem adultTrade = InventoryItem.NONE;
+        public InventoryItem[] items = new InventoryItem[(int)InventorySlot.COUNT];
+        public OoTOnlineEquipmentSync equipment = new OoTOnlineEquipmentSync();
+        public OoTOnlineQuestStatusSync questStatus = new OoTOnlineQuestStatusSync();
+    }
 
+    public class OoTOnlineEquipmentSync
+    {
         public bool kokiriSword = false;
         public bool masterSword = false;
         public bool giantsKnife = false;
@@ -75,10 +57,9 @@ namespace Z64Online.OoTOnline
         public bool kokiriBoots = false;
         public bool ironBoots = false;
         public bool hoverBoots = false;
-
     }
 
-    class OoTOnlineQuestStatus
+    public class OoTOnlineQuestStatusSync
     {
 
     }

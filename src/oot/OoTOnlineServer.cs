@@ -41,6 +41,27 @@ namespace Z64Online.OoTOnline
             SetLobbyStorage(storage, evt.lobby);
         }
 
+        [EventHandler(NetworkEvents.SERVER_ON_NETWORK_LOBBY_DISCONNECT)]
+        public static void OnPlayerLeave_Server(EventServerNetworkLobbyDisconnect evt)
+        {
+            Console.WriteLine("OnPlayerLeave_Server");
+            OoTOnlineStorage storage = GetLobbyStorage(evt.lobby);
+            if (storage == null) { return; }
+
+            foreach(var player in storage.players)
+            {
+                if (player.uuid == evt.player.uuid)
+                {
+                    storage.players.Remove(player);
+                    break;
+                }
+            }
+
+            storage.networkPlayerInstances.Remove(evt.player);
+
+            Console.WriteLine($"Server: Player {evt.player.nickname} disconnected.");
+        }
+
         [ServerNetworkHandler(typeof(Z64O_UpdateSaveDataPacket))]
         public static void OnUpdateSaveData_Server(Z64O_UpdateSaveDataPacket packet)
         {
@@ -52,10 +73,6 @@ namespace Z64Online.OoTOnline
             {
                 NetworkSenders.Server.SendPacket(new Z64O_ErrorPacket("The server has encountered an error with your world. (world id is undefined)", packet.lobby), packet.lobby);
                 return;
-            }
-            else
-            {
-                storage.worlds[packet.player.data.world] = new OotOnlineSave_Server();
             }
             var world = storage.worlds[packet.player.data.world];
             storage.saveManager.MergeSave(packet.save, world.save);
@@ -75,6 +92,7 @@ namespace Z64Online.OoTOnline
                 if(player.uuid == packet.player.uuid)
                 {
                     player.scene = packet.scene;
+                    break;
                 }
             }
 
@@ -99,6 +117,7 @@ namespace Z64Online.OoTOnline
                 storage.worlds.Add(new OotOnlineSave_Server());
             }
             var world = storage.worlds[packet.player.data.world];
+            Console.WriteLine($"World is set up?: {world.saveGameSetup}");
             if (world.saveGameSetup) {
                 // Game is running, get data.
                 Z64O_DownloadResponsePacket resp = new Z64O_DownloadResponsePacket(packet.lobby, packet.player);
@@ -114,6 +133,7 @@ namespace Z64Online.OoTOnline
                 Console.WriteLine("Player UUID: "+ packet.player.uuid);
                 NetworkSenders.Server.SendPacketToSpecificPlayer(response, packet.player, packet.lobby);
             }
+            storage.worlds[packet.player.data.world] = world;
         }
 
         public static OoTOnlineStorage GetLobbyStorage(string lobby)
@@ -138,14 +158,11 @@ namespace Z64Online.OoTOnline
             {
                 if(storage.lobby == lobby)
                 {
-                    index = lobbyStorage.FindIndex(index => storage.lobby == lobby);
-                    success = true;
+                    lobbyStorage[lobbyStorage.FindIndex(index => storage.lobby == lobby)] = incoming;
+                    break;
                 }
             }
 
-            if (!success) return;
-
-            lobbyStorage[index] = incoming;
             Console.WriteLine($"SetLobbyStorage: {index}");
             
         }
