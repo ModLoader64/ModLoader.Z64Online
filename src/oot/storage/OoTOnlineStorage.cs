@@ -61,7 +61,33 @@ namespace Z64Online.OoTOnline
 
     public class OoTOnlineQuestStatusSync
     {
-
+        public u16 healthCapacity; // 4 = 1 Heart
+        public u8 heartPieces; // 0 - 4 , never set 4
+        public u8 magicLevel;
+        public bool songLullaby = false;
+        public bool songEpona = false;
+        public bool songSaria = false;
+        public bool songSun = false;
+        public bool songTime = false;
+        public bool songStorms = false;
+        public bool songPrelude = false;
+        public bool songMinuet = false;
+        public bool songBolero = false;
+        public bool songSerenade = false;
+        public bool songNocturne = false;
+        public bool songRequiem = false;
+        public bool kokiriEmerald = false;
+        public bool goronRuby = false;
+        public bool zoraSapphire = false;
+        public bool medallionForest = false;
+        public bool medallionFire = false;
+        public bool medallionWater = false;
+        public bool medallionSpirit = false;
+        public bool medallionShadow = false;
+        public bool medallionLight = false;
+        public bool stoneAgony = false;
+        public bool gerudoCard = false;
+        public bool hasGoldSkull = false;
     }
 
     public class OOTKeyRingServer : IKeyRing

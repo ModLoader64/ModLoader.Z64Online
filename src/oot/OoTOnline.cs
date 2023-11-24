@@ -100,6 +100,63 @@ public class OoTOnline : IBootstrapFilter
                     }
                     ImGui.EndMenu();
                 }
+
+                if (ImGui.BeginMenu("Status"))
+                {
+                    ImGui.Text("Max Health: " + Core.save.healthCapacity / 16);
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Increase##MaxHealthUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        Core.save.healthCapacity += 4 * 4;
+                        Core.save.health = Core.save.healthCapacity;
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Decrease##MaxHealthDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        if(Core.save.healthCapacity > 4 * 4)
+                        {
+                            Core.save.healthCapacity -= 4 * 4;
+                        }
+                        Core.save.health = Core.save.healthCapacity;
+                    }
+
+                    ImGui.Text("Heart Pieces: " + Core.save.inventory.questStatus.heartPieces);
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Increase##HeartPieceUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        if(Core.save.inventory.questStatus.heartPieces < 4)
+                        {
+                            Core.save.inventory.questStatus.heartPieces += 1;
+                        } else
+                        {
+                            Core.save.inventory.questStatus.heartPieces = 0;
+                            Core.save.healthCapacity += 4 * 4;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Decrease##HeartPieceDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        if (Core.save.inventory.questStatus.heartPieces > 0)
+                        {
+                            Core.save.inventory.questStatus.heartPieces -= 1;
+                        }
+                    }
+
+                    ImGui.Text("Max Magic: " + Core.save.magicLevel);
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Increase##MaxMagicUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        if (Core.save.magicLevel >= 2) return;
+                        Core.save.magicLevel++;
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Decrease##MaxMagicDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        if (Core.save.magicLevel <= 0) return;
+                        Core.save.magicLevel--;
+                    }
+                    ImGui.EndMenu();
+                }
                 if (ImGui.BeginMenu("Equipment"))
                 {
                     ImGui.Text("Kokiri Sword: " + Core.save.inventory.equipment.kokiriSword);
@@ -195,6 +252,197 @@ public class OoTOnline : IBootstrapFilter
 
                     ImGui.EndMenu();
                 }
+
+                if (ImGui.BeginMenu("QuestStatus"))
+                {
+                    if (ImGui.BeginMenu("Stones"))
+                    {
+                        ImGui.Text("Kokiri Emerald: " + Core.save.inventory.questStatus.kokiriEmerald);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##KokiriEmerald"))
+                        {
+                            Core.save.inventory.questStatus.kokiriEmerald = !Core.save.inventory.questStatus.kokiriEmerald;
+                        }
+
+                        ImGui.Text("Goron Ruby: " + Core.save.inventory.questStatus.goronRuby);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##GoronRuby"))
+                        {
+                            Core.save.inventory.questStatus.goronRuby = !Core.save.inventory.questStatus.goronRuby;
+                        }
+
+                        ImGui.Text("Zora Sapphire: " + Core.save.inventory.questStatus.zoraSapphire);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##ZoraSapphire"))
+                        {
+                            Core.save.inventory.questStatus.zoraSapphire = !Core.save.inventory.questStatus.zoraSapphire;
+                        }
+                        ImGui.EndMenu();
+                    }
+                    
+                    if (ImGui.BeginMenu("Medallions"))
+                    {
+                        ImGui.Text("Forest Medallion: " + Core.save.inventory.questStatus.medallionForest);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##ForestMedallion"))
+                        {
+                            Core.save.inventory.questStatus.medallionForest = !Core.save.inventory.questStatus.medallionForest;
+                        }
+
+                        ImGui.Text("Fire Medallion: " + Core.save.inventory.questStatus.medallionFire);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##FireMedallion"))
+                        {
+                            Core.save.inventory.questStatus.medallionFire = !Core.save.inventory.questStatus.medallionFire;
+                        }
+
+                        ImGui.Text("Water Medallion: " + Core.save.inventory.questStatus.medallionWater);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##WaterMedallion"))
+                        {
+                            Core.save.inventory.questStatus.medallionWater = !Core.save.inventory.questStatus.medallionWater;
+                        }
+
+                        ImGui.Text("Spirit Medallion: " + Core.save.inventory.questStatus.medallionSpirit);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##SpiritMedallion"))
+                        {
+                            Core.save.inventory.questStatus.medallionSpirit = !Core.save.inventory.questStatus.medallionSpirit;
+                        }
+
+                        ImGui.Text("Shadow Medallion: " + Core.save.inventory.questStatus.medallionShadow);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##ShadowMedallion"))
+                        {
+                            Core.save.inventory.questStatus.medallionShadow = !Core.save.inventory.questStatus.medallionShadow;
+                        }
+
+                        ImGui.Text("light Medallion: " + Core.save.inventory.questStatus.medallionLight);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##LightMedallion"))
+                        {
+                            Core.save.inventory.questStatus.medallionLight = !Core.save.inventory.questStatus.medallionLight;
+                        }
+                        ImGui.EndMenu();
+                    }
+
+                    if (ImGui.BeginMenu("Songs"))
+                    {
+                        ImGui.Text("Zelda's Lullaby: " + Core.save.inventory.questStatus.songLullaby);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##ZeldasLullaby"))
+                        {
+                            Core.save.inventory.questStatus.songLullaby = !Core.save.inventory.questStatus.songLullaby;
+                        }
+
+                        ImGui.Text("Epona Song: " + Core.save.inventory.questStatus.songEpona);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##EponaSong"))
+                        {
+                            Core.save.inventory.questStatus.songEpona = !Core.save.inventory.questStatus.songEpona;
+                        }
+
+                        ImGui.Text("Saria's Song: " + Core.save.inventory.questStatus.songSaria);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##SariaSong"))
+                        {
+                            Core.save.inventory.questStatus.songSaria = !Core.save.inventory.questStatus.songSaria;
+                        }
+
+                        ImGui.Text("Song of Time: " + Core.save.inventory.questStatus.songTime);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##SongOfTime"))
+                        {
+                            Core.save.inventory.questStatus.songTime = !Core.save.inventory.questStatus.songTime;
+                        }
+
+                        ImGui.Text("Song of Storms: " + Core.save.inventory.questStatus.songStorms);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##SongStorms"))
+                        {
+                            Core.save.inventory.questStatus.songStorms = !Core.save.inventory.questStatus.songStorms;
+                        }
+
+                        ImGui.Text("Sun Song: " + Core.save.inventory.questStatus.songSun);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##SunSong"))
+                        {
+                            Core.save.inventory.questStatus.songSun = !Core.save.inventory.questStatus.songSun;
+                        }
+
+                        ImGui.Text("Minuet of Forest: " + Core.save.inventory.questStatus.songMinuet);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##MinuetForest"))
+                        {
+                            Core.save.inventory.questStatus.songMinuet = !Core.save.inventory.questStatus.songMinuet;
+                        }
+
+                        ImGui.Text("Bolero of Fire: " + Core.save.inventory.questStatus.songBolero);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##BoleroFire"))
+                        {
+                            Core.save.inventory.questStatus.songBolero = !Core.save.inventory.questStatus.songBolero;
+                        }
+
+                        ImGui.Text("Serenade of Water: " + Core.save.inventory.questStatus.songSerenade);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##SerenadeWater"))
+                        {
+                            Core.save.inventory.questStatus.songSerenade = !Core.save.inventory.questStatus.songSerenade;
+                        }
+
+                        ImGui.Text("Nocturne of Shadow: " + Core.save.inventory.questStatus.songNocturne);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##NocturneShadow"))
+                        {
+                            Core.save.inventory.questStatus.songNocturne = !Core.save.inventory.questStatus.songNocturne;
+                        }
+
+                        ImGui.Text("Requiem of Spirit:" + Core.save.inventory.questStatus.songRequiem);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##RequiemSpirit"))
+                        {
+                            Core.save.inventory.questStatus.songRequiem = !Core.save.inventory.questStatus.songRequiem;
+                        }
+
+                        ImGui.Text("Prelude of Light:" + Core.save.inventory.questStatus.songPrelude);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##PreludeLight"))
+                        {
+                            Core.save.inventory.questStatus.songPrelude = !Core.save.inventory.questStatus.songPrelude;
+                        }
+                        ImGui.EndMenu();
+
+                    }
+
+                    if (ImGui.BeginMenu("Misc"))
+                    {
+                        ImGui.Text("Stone of Agony: " + Core.save.inventory.questStatus.stoneAgony);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##StoneAgony"))
+                        {
+                            Core.save.inventory.questStatus.stoneAgony = !Core.save.inventory.questStatus.stoneAgony;
+                        }
+
+                        ImGui.Text("Gerudo Card: " + Core.save.inventory.questStatus.gerudoCard);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##GerudoCard"))
+                        {
+                            Core.save.inventory.questStatus.gerudoCard = !Core.save.inventory.questStatus.gerudoCard;
+                        }
+
+                        ImGui.Text("Skull Counter Enabled: " + Core.save.inventory.questStatus.hasGoldSkull);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##SkullEnable"))
+                        {
+                            Core.save.inventory.questStatus.hasGoldSkull = !Core.save.inventory.questStatus.hasGoldSkull;
+                        }
+                        ImGui.EndMenu();
+                    }
+
+                    ImGui.EndMenu();
+                }
+
                 ImGui.End();
             }
         }
