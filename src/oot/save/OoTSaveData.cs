@@ -38,6 +38,7 @@ namespace Z64Online.OoTOnline
             MergeItems(incoming.items, save.items);
             MergeEquipment(incoming.equipment, save.equipment);
             MergeQuestStatus(incoming.questStatus, save.questStatus);
+            MergeDungeonData(incoming.dungeon, save.dungeon);
         }
 
         public void MergeItems(InventoryItem[] incoming, InventoryItem[] save)
@@ -160,17 +161,21 @@ namespace Z64Online.OoTOnline
             if (incoming.healthCapacity > save.healthCapacity && save.healthCapacity < 20)
             {
                 save.healthCapacity = incoming.healthCapacity;
-            } else if (save.healthCapacity > 20)
+            }
+            else if (save.healthCapacity > 20)
             {
                 save.healthCapacity = 20;
             }
 
-            if ( incoming.heartPieces >  save.heartPieces && incoming.heartPieces < 4) // Make sure not to apply a 4th piece
+            if (incoming.heartPieces > save.heartPieces && incoming.heartPieces < 4) // Make sure not to apply a 4th piece
             {
                 save.heartPieces = incoming.heartPieces;
-            } else if (incoming.heartPieces == 0 && save.heartPieces == 3) { // Heart Pieces reset back to 0 due to a 4th piece making a new container
+            }
+            else if (incoming.heartPieces == 0 && save.heartPieces == 3)
+            { // Heart Pieces reset back to 0 due to a 4th piece making a new container
                 save.heartPieces = incoming.heartPieces;
-            } else if (incoming.heartPieces >= 4) // Just in case the 4th piece is actually sent 
+            }
+            else if (incoming.heartPieces >= 4) // Just in case the 4th piece is actually sent 
             {
                 save.heartPieces = 0;
             }
@@ -180,9 +185,35 @@ namespace Z64Online.OoTOnline
                 save.magicLevel = incoming.magicLevel;
             }
 
-            if(incoming.gsTokens > save.gsTokens && incoming.gsTokens <= 100)
+            if (incoming.gsTokens > save.gsTokens && incoming.gsTokens <= 100)
             {
                 save.gsTokens = incoming.gsTokens;
+            }
+        }
+
+        public void MergeDungeonData(OoTOnlineDungeonSync incoming, OoTOnlineDungeonSync save)
+        {
+            // TODO: Do this better, maybe keep keys handled exclusively via network handlers?
+            for (u8 i = 0; i < save.keys.Length; i++)
+            {
+                if (save.keys[i].count < incoming.keys[i].count)
+                {
+                    save.keys[i] = incoming.keys[i];
+                }
+                else if (incoming.keys[i].count < save.keys[i].count && (save.keys[i].count - incoming.keys[i].count) == 1) // In case key is used, prone to error though.
+                {
+                    save.keys[i] = incoming.keys[i];
+                }
+            }
+
+            for (u8 i = 0; i < save.items.Length; i++)
+            {
+                if (save.items[i] != incoming.items[i])
+                {
+                    if (incoming.items[i].bossKey) save.items[i].bossKey = incoming.items[i].bossKey;
+                    if (incoming.items[i].compass) save.items[i].compass = incoming.items[i].compass;
+                    if (incoming.items[i].map) save.items[i].map = incoming.items[i].map;
+                }
             }
         }
 
@@ -243,7 +274,7 @@ namespace Z64Online.OoTOnline
                 save.hoverBoots = incoming.hoverBoots;
 
                 save.bombBag = incoming.bombBag;
-                save.bulletBag  = incoming.bulletBag;
+                save.bulletBag = incoming.bulletBag;
                 save.wallet = incoming.wallet;
                 save.quiver = incoming.quiver;
                 save.dekuNutCapacity = incoming.dekuNutCapacity;
@@ -354,6 +385,19 @@ namespace Z64Online.OoTOnline
             }
         }
 
+        public void OverrideDungeonData(OoTOnlineDungeonSync incoming, OoTOnlineDungeonSync save = null)
+        {
+            if (save != null)
+            {
+                save.keys = incoming.keys;
+                save.items = incoming.items;
+            }
+            else
+            {
+                Core.save.inventory.dungeon.keys.SetKeysBuffer(incoming.keys);
+                Core.save.inventory.dungeon.items.SetItemsBuffer(incoming.items);
+            }
+        }
 
         public OoTOnlineInventorySync CreateInventory(WrapperSaveContext save)
         {
@@ -362,6 +406,12 @@ namespace Z64Online.OoTOnline
             for (int i = 0; i < (int)InventorySlot.COUNT; i++)
             {
                 sync.items[i] = save.inventory.InventoryItems[i];
+            }
+
+            for (int i = 0; i < sync.dungeon.keys.Length; i++)
+            {
+                sync.dungeon.items[i] = save.inventory.dungeon.items[i];
+                sync.dungeon.keys[i] = save.inventory.dungeon.keys[i];
             }
 
             sync.equipment.kokiriSword = save.inventory.equipment.kokiriSword;

@@ -1,4 +1,5 @@
 ﻿
+using Cake.Core;
 using OoT.API;
 using OoT.API.Enums;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -41,6 +42,7 @@ namespace Z64Online.OoTOnline
         public InventoryItem[] items = new InventoryItem[(int)InventorySlot.COUNT];
         public OoTOnlineEquipmentSync equipment = new OoTOnlineEquipmentSync();
         public OoTOnlineQuestStatusSync questStatus = new OoTOnlineQuestStatusSync();
+        public OoTOnlineDungeonSync dungeon = new OoTOnlineDungeonSync();
     }
 
     public class OoTOnlineEquipmentSync
@@ -100,6 +102,12 @@ namespace Z64Online.OoTOnline
         public bool gerudoCard = false;
         public bool hasGoldSkull = false;
         public bool hasDoubleDefense = false;
+    }
+
+    public class OoTOnlineDungeonSync
+    {
+        public DungeonItems[] items = new DungeonItems[0x14];
+        public DungeonKeys[] keys = new DungeonKeys[0x14];
     }
 
     public class OOTKeyRingServer : IKeyRing

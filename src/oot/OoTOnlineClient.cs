@@ -14,7 +14,6 @@ namespace Z64Online.OoTOnline
 
         public static bool DoesLoad(byte[] e)
         {
-            
             return Z64Online.currentGame.OoT || Z64Online.currentGame.OoTDBG;
         }
 
