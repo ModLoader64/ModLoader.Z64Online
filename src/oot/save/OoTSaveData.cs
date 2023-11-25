@@ -153,19 +153,24 @@ namespace Z64Online.OoTOnline
             if (incoming.songRequiem) save.songRequiem = incoming.songRequiem;
             if (incoming.songPrelude) save.songPrelude = incoming.songPrelude;
 
+            if (incoming.hasDoubleDefense) save.hasDoubleDefense = incoming.hasDoubleDefense;
+
             // Health & Magic
 
-            if (incoming.healthCapacity > save.healthCapacity)
+            if (incoming.healthCapacity > save.healthCapacity && save.healthCapacity < 20)
             {
                 save.healthCapacity = incoming.healthCapacity;
+            } else if (save.healthCapacity > 20)
+            {
+                save.healthCapacity = 20;
             }
 
-            if ( incoming.heartPieces >  save.heartPieces && incoming.heartPieces < 40) // Make sure not to apply a 4th piece
+            if ( incoming.heartPieces >  save.heartPieces && incoming.heartPieces < 4) // Make sure not to apply a 4th piece
             {
                 save.heartPieces = incoming.heartPieces;
-            } else if (incoming.heartPieces == 0 && save.heartPieces == 30) { // Heart Pieces reset back to 0 due to a 4th piece making a new container
+            } else if (incoming.heartPieces == 0 && save.heartPieces == 3) { // Heart Pieces reset back to 0 due to a 4th piece making a new container
                 save.heartPieces = incoming.heartPieces;
-            } else if (incoming.heartPieces >= 40) // Just in case the 4th piece is actually sent 
+            } else if (incoming.heartPieces >= 4) // Just in case the 4th piece is actually sent 
             {
                 save.heartPieces = 0;
             }
@@ -173,6 +178,11 @@ namespace Z64Online.OoTOnline
             if (incoming.magicLevel > save.magicLevel)
             {
                 save.magicLevel = incoming.magicLevel;
+            }
+
+            if(incoming.gsTokens > save.gsTokens && incoming.gsTokens <= 100)
+            {
+                save.gsTokens = incoming.gsTokens;
             }
         }
 
@@ -303,6 +313,8 @@ namespace Z64Online.OoTOnline
                 save.heartPieces = incoming.heartPieces;
                 save.magicLevel = incoming.magicLevel;
                 save.healthCapacity = incoming.healthCapacity;
+                save.gsTokens = incoming.gsTokens;
+                save.hasDoubleDefense = incoming.hasDoubleDefense;
             }
             else
             {
@@ -336,6 +348,8 @@ namespace Z64Online.OoTOnline
                 Core.save.inventory.questStatus.heartPieces = incoming.heartPieces;
                 Core.save.magicLevel = incoming.magicLevel;
                 Core.save.healthCapacity = incoming.healthCapacity;
+                Core.save.inventory.questStatus.gsTokens = incoming.gsTokens;
+                Core.save.isDoubleDefenseAcquired = incoming.hasDoubleDefense;
             }
         }
 
@@ -401,6 +415,8 @@ namespace Z64Online.OoTOnline
             sync.questStatus.heartPieces = save.inventory.questStatus.heartPieces;
             sync.questStatus.magicLevel = save.magicLevel;
             sync.questStatus.healthCapacity = save.healthCapacity;
+            sync.questStatus.gsTokens = save.inventory.gsTokens;
+            sync.questStatus.hasDoubleDefense = save.isDoubleDefenseAcquired;
 
             return sync;
         }

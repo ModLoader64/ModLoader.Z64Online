@@ -87,19 +87,19 @@ public class OoTOnline : IBootstrapFilter
 
                 if (ImGui.BeginMenu("Status"))
                 {
-                    ImGui.Text("Max Health: " + Core.save.healthCapacity / 16);
+                    ImGui.Text("Max Health: " + Core.save.healthCapacity);
                     ImGui.SameLine();
                     if (ImGui.ArrowButton("Increase##MaxHealthUp", ImGuiNET.ImGuiDir.Up))
                     {
-                        Core.save.healthCapacity += 4 * 4;
+                        Core.save.healthCapacity += 1;
                         Core.save.health = Core.save.healthCapacity;
                     }
                     ImGui.SameLine();
                     if (ImGui.ArrowButton("Decrease##MaxHealthDown", ImGuiNET.ImGuiDir.Down))
                     {
-                        if(Core.save.healthCapacity > 4 * 4)
+                        if(Core.save.healthCapacity > 1)
                         {
-                            Core.save.healthCapacity -= 4 * 4;
+                            Core.save.healthCapacity -= 1;
                         }
                         Core.save.health = Core.save.healthCapacity;
                     }
@@ -108,22 +108,46 @@ public class OoTOnline : IBootstrapFilter
                     ImGui.SameLine();
                     if (ImGui.ArrowButton("Increase##HeartPieceUp", ImGuiNET.ImGuiDir.Up))
                     {
-                        if(Core.save.inventory.questStatus.heartPieces < 40)
+                        switch (Core.save.inventory.questStatus.heartPieces)
                         {
-                            Core.save.inventory.questStatus.heartPieces += 10;
-                        } else
-                        {
-                            Core.save.inventory.questStatus.heartPieces = 0;
-                            Core.save.healthCapacity += 4 * 4;
+                            case 0:
+                                Core.save.inventory.questStatus.heartPieces = 1;
+                                break;
+                            case 1:
+                                Core.save.inventory.questStatus.heartPieces = 2;
+                                break;
+                            case 2:
+                                Core.save.inventory.questStatus.heartPieces = 3;
+                                break;
+                            case 3:
+                                Core.save.healthCapacity += 1;
+                                Core.save.health = Core.save.healthCapacity;
+                                Core.save.inventory.questStatus.heartPieces = 0;
+                                break;
                         }
                     }
                     ImGui.SameLine();
                     if (ImGui.ArrowButton("Decrease##HeartPieceDown", ImGuiNET.ImGuiDir.Down))
                     {
-                        if (Core.save.inventory.questStatus.heartPieces >= 10)
+                        switch (Core.save.inventory.questStatus.heartPieces)
                         {
-                            Core.save.inventory.questStatus.heartPieces -= 10;
+                            case 1:
+                                Core.save.inventory.questStatus.heartPieces = 0;
+                                break;
+                            case 2:
+                                Core.save.inventory.questStatus.heartPieces = 1;
+                                break;
+                            case 3:
+                                Core.save.inventory.questStatus.heartPieces = 2;
+                                break;
                         }
+                    }
+
+                    ImGui.Text("Double Defense: " + Core.save.isDoubleDefenseAcquired);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Set##DoubleDefense"))
+                    {
+                        Core.save.isDoubleDefenseAcquired = !Core.save.isDoubleDefenseAcquired;
                     }
 
                     ImGui.Text("Max Magic: " + Core.save.magicLevel);
@@ -706,6 +730,26 @@ public class OoTOnline : IBootstrapFilter
                         {
                             Core.save.inventory.questStatus.hasGoldSkull = !Core.save.inventory.questStatus.hasGoldSkull;
                         }
+
+                        ImGui.Text("Gold Skulltulas: " + Core.save.inventory.gsTokens);
+                        ImGui.SameLine();
+                        if (ImGui.ArrowButton("Add##GoldSkulltulasUp", ImGuiNET.ImGuiDir.Up))
+                        {
+                            if (Core.save.inventory.gsTokens < 100)
+                            {
+                                Core.save.inventory.questStatus.hasGoldSkull = true;
+                                Core.save.inventory.gsTokens++;
+                            }
+                        }
+                        ImGui.SameLine();
+                        if (ImGui.ArrowButton("Add##GoldSkulltulasDown", ImGuiNET.ImGuiDir.Down))
+                        {
+                            if (Core.save.inventory.gsTokens > 0)
+                            {
+                                Core.save.inventory.gsTokens--;
+                            } else Core.save.inventory.questStatus.hasGoldSkull = false;
+                        }
+
                         ImGui.EndMenu();
                     }
 

@@ -74,6 +74,7 @@ namespace Z64Online.OoTOnline
         public u16 healthCapacity; // 4 = 1 Heart
         public u8 heartPieces; // 0 - 4 , never set 4
         public u8 magicLevel;
+        public s16 gsTokens;
         public bool songLullaby = false;
         public bool songEpona = false;
         public bool songSaria = false;
@@ -98,6 +99,7 @@ namespace Z64Online.OoTOnline
         public bool stoneAgony = false;
         public bool gerudoCard = false;
         public bool hasGoldSkull = false;
+        public bool hasDoubleDefense = false;
     }
 
     public class OOTKeyRingServer : IKeyRing
