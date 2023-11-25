@@ -1,6 +1,7 @@
 ﻿using OoT.API;
 using OoT;
 using System.Reflection.PortableExecutable;
+using OoT.API.Enums;
 
 namespace Z64Online.OoTOnline
 {
@@ -175,8 +176,8 @@ namespace Z64Online.OoTOnline
                     if (ImGui.BeginMenu("Dungeon"))
                     {
                         for (int i = 0; i < 0x14; i++)
-                        {   
-                            if(ImGui.BeginMenu($"Dungeon {i}"))
+                        {
+                            if (ImGui.BeginMenu($"{(VANILLA_DUNGEON_ITEM_INDEXES)i}"))
                             {
                                 ImGui.Text($"Keys: {Core.save.inventory.dungeon.keys[i].count}");
                                 ImGui.SameLine();

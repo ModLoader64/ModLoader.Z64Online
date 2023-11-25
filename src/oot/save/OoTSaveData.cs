@@ -225,12 +225,14 @@ namespace Z64Online.OoTOnline
                 OverrideItems(incoming.inventory.items, save.inventory.items);
                 OverrideEquipment(incoming.inventory.equipment, save.inventory.equipment);
                 OverrideQuestStatus(incoming.inventory.questStatus, save.inventory.questStatus);
+                OverrideDungeonData(incoming.inventory.dungeon, save.inventory.dungeon);
             }
             else
             {
                 OverrideItems(incoming.inventory.items);
                 OverrideEquipment(incoming.inventory.equipment);
                 OverrideQuestStatus(incoming.inventory.questStatus);
+                OverrideDungeonData(incoming.inventory.dungeon);
             }
         }
 
