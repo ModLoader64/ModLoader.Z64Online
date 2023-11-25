@@ -1,5 +1,6 @@
 ﻿
 using OoT.API;
+using OoT.API.Enums;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Z64Online.OoTOnline
@@ -57,6 +58,15 @@ namespace Z64Online.OoTOnline
         public bool kokiriBoots = false;
         public bool ironBoots = false;
         public bool hoverBoots = false;
+
+        public Capacity.AmmoUpgrade dekuNutCapacity = Capacity.AmmoUpgrade.None;
+        public Capacity.AmmoUpgrade dekuStickCapacity = Capacity.AmmoUpgrade.None;
+        public Capacity.AmmoUpgrade bombBag = Capacity.AmmoUpgrade.None;
+        public Capacity.AmmoUpgrade bulletBag = Capacity.AmmoUpgrade.None;
+        public Capacity.AmmoUpgrade quiver = Capacity.AmmoUpgrade.None;
+        public Capacity.Wallet wallet = Capacity.Wallet.None;
+        public Capacity.Strength strength = Capacity.Strength.None;
+        public Capacity.Scales scale = Capacity.Scales.None;
     }
 
     public class OoTOnlineQuestStatusSync

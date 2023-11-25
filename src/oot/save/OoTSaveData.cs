@@ -90,6 +90,38 @@ namespace Z64Online.OoTOnline
             if (incoming.ironBoots) save.ironBoots = incoming.ironBoots;
             if (incoming.hoverBoots) save.hoverBoots = incoming.hoverBoots;
 
+            if (incoming.dekuNutCapacity > save.dekuNutCapacity)
+            {
+                save.dekuNutCapacity = incoming.dekuNutCapacity;
+            }
+            if (incoming.dekuStickCapacity > save.dekuStickCapacity)
+            {
+                save.dekuStickCapacity = incoming.dekuStickCapacity;
+            }
+            if (incoming.quiver > save.quiver)
+            {
+                save.quiver = incoming.quiver;
+            }
+            if (incoming.bombBag > save.bombBag)
+            {
+                save.bombBag = incoming.bombBag;
+            }
+            if (incoming.bulletBag > save.bulletBag)
+            {
+                save.bulletBag = incoming.bulletBag;
+            }
+            if (incoming.wallet > save.wallet)
+            {
+                save.wallet = incoming.wallet;
+            }
+            if (incoming.strength > save.strength)
+            {
+                save.strength = incoming.strength;
+            }
+            if (incoming.scale > save.scale)
+            {
+                save.scale = incoming.scale;
+            }
         }
 
         public void MergeQuestStatus(OoTOnlineQuestStatusSync incoming, OoTOnlineQuestStatusSync save)
@@ -108,19 +140,18 @@ namespace Z64Online.OoTOnline
             if (incoming.gerudoCard) save.gerudoCard = incoming.gerudoCard;
             if (incoming.hasGoldSkull) save.hasGoldSkull = incoming.hasGoldSkull;
 
-            if (incoming.songLullaby) save.kokiriEmerald = incoming.kokiriEmerald;
-            if (incoming.songEpona) save.goronRuby = incoming.goronRuby;
-            if (incoming.songSaria) save.hasGoldSkull = incoming.hasGoldSkull;
-            if (incoming.songTime) save.medallionForest = incoming.medallionForest;
-            if (incoming.songStorms) save.medallionFire = incoming.medallionFire;
-            if (incoming.songSun) save.zoraSapphire = incoming.zoraSapphire;
-            if (incoming.songMinuet) save.medallionWater = incoming.medallionWater;
-            if (incoming.songBolero) save.medallionSpirit = incoming.medallionSpirit;
-            if (incoming.songSerenade) save.medallionShadow = incoming.medallionShadow;
-            if (incoming.songNocturne) save.medallionLight = incoming.medallionLight;
-            if (incoming.songRequiem) save.stoneAgony = incoming.stoneAgony;
-            if (incoming.songPrelude) save.gerudoCard = incoming.gerudoCard;
-
+            if (incoming.songLullaby) save.songLullaby = incoming.songLullaby;
+            if (incoming.songEpona) save.songEpona = incoming.songEpona;
+            if (incoming.songSaria) save.songSaria = incoming.songSaria;
+            if (incoming.songTime) save.songTime = incoming.songTime;
+            if (incoming.songStorms) save.songStorms = incoming.songStorms;
+            if (incoming.songSun) save.songSun = incoming.songSun;
+            if (incoming.songMinuet) save.songMinuet = incoming.songMinuet;
+            if (incoming.songBolero) save.songBolero = incoming.songBolero;
+            if (incoming.songSerenade) save.songSerenade = incoming.songSerenade;
+            if (incoming.songNocturne) save.songNocturne = incoming.songNocturne;
+            if (incoming.songRequiem) save.songRequiem = incoming.songRequiem;
+            if (incoming.songPrelude) save.songPrelude = incoming.songPrelude;
 
             // Health & Magic
 
@@ -129,12 +160,12 @@ namespace Z64Online.OoTOnline
                 save.healthCapacity = incoming.healthCapacity;
             }
 
-            if ( incoming.heartPieces >  save.heartPieces && incoming.heartPieces < 4) // Make sure not to apply a 4th piece
+            if ( incoming.heartPieces >  save.heartPieces && incoming.heartPieces < 40) // Make sure not to apply a 4th piece
             {
                 save.heartPieces = incoming.heartPieces;
-            } else if (incoming.heartPieces == 0 && save.heartPieces == 3) { // Heart Pieces reset back to 0 due to a 4th piece making a new container
+            } else if (incoming.heartPieces == 0 && save.heartPieces == 30) { // Heart Pieces reset back to 0 due to a 4th piece making a new container
                 save.heartPieces = incoming.heartPieces;
-            } else if (incoming.heartPieces == 4) // Just in case the 4th piece is actually sent 
+            } else if (incoming.heartPieces >= 40) // Just in case the 4th piece is actually sent 
             {
                 save.heartPieces = 0;
             }
@@ -200,6 +231,15 @@ namespace Z64Online.OoTOnline
                 save.kokiriBoots = incoming.kokiriBoots;
                 save.ironBoots = incoming.ironBoots;
                 save.hoverBoots = incoming.hoverBoots;
+
+                save.bombBag = incoming.bombBag;
+                save.bulletBag  = incoming.bulletBag;
+                save.wallet = incoming.wallet;
+                save.quiver = incoming.quiver;
+                save.dekuNutCapacity = incoming.dekuNutCapacity;
+                save.dekuStickCapacity = incoming.dekuStickCapacity;
+                save.strength = incoming.strength;
+                save.scale = incoming.scale;
             }
             else
             {
@@ -216,6 +256,15 @@ namespace Z64Online.OoTOnline
                 Core.save.inventory.equipment.kokiriBoots = incoming.kokiriBoots;
                 Core.save.inventory.equipment.ironBoots = incoming.ironBoots;
                 Core.save.inventory.equipment.hoverBoots = incoming.hoverBoots;
+
+                Core.save.inventory.upgrades.bombBag = incoming.bombBag;
+                Core.save.inventory.upgrades.bulletBag = incoming.bulletBag;
+                Core.save.inventory.upgrades.wallet = incoming.wallet;
+                Core.save.inventory.upgrades.quiver = incoming.quiver;
+                Core.save.inventory.upgrades.dekuNutCapacity = incoming.dekuNutCapacity;
+                Core.save.inventory.upgrades.dekuStickCapacity = incoming.dekuStickCapacity;
+                Core.save.inventory.upgrades.strength = incoming.strength;
+                Core.save.inventory.upgrades.scale = incoming.scale;
             }
         }
 
@@ -313,6 +362,15 @@ namespace Z64Online.OoTOnline
             sync.equipment.kokiriBoots = save.inventory.equipment.kokiriBoots;
             sync.equipment.ironBoots = save.inventory.equipment.ironBoots;
             sync.equipment.hoverBoots = save.inventory.equipment.hoverBoots;
+
+            sync.equipment.bombBag = save.inventory.upgrades.bombBag;
+            sync.equipment.bulletBag = save.inventory.upgrades.bulletBag;
+            sync.equipment.wallet = save.inventory.upgrades.wallet;
+            sync.equipment.quiver = save.inventory.upgrades.quiver;
+            sync.equipment.dekuNutCapacity = save.inventory.upgrades.dekuNutCapacity;
+            sync.equipment.dekuStickCapacity = save.inventory.upgrades.dekuStickCapacity;
+            sync.equipment.strength = save.inventory.upgrades.strength;
+            sync.equipment.scale = save.inventory.upgrades.scale;
 
             sync.questStatus.songLullaby = save.inventory.questStatus.songLullaby;
             sync.questStatus.songEpona = save.inventory.questStatus.songEpona;

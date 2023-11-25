@@ -85,22 +85,6 @@ public class OoTOnline : IBootstrapFilter
             if (ImGui.BeginMenu("OoTO"))
             {
 
-                if (ImGui.BeginMenu("Inventory"))
-                {
-                    for (int i = 0; i < 24; i++)
-                    {
-                        string s = ((InventorySlot)i).ToString();
-                        string v = Core.save.inventory.InventoryItems[(InventorySlot)i].ToString("X");
-                        ImGui.Text(s + ": 0x" + v);
-                        ImGui.SameLine();
-                        if (ImGui.Button("Set##" + i))
-                        {
-                            Core.save.inventory.InventoryItems[(InventorySlot)i] = InventoryTest[i];
-                        }
-                    }
-                    ImGui.EndMenu();
-                }
-
                 if (ImGui.BeginMenu("Status"))
                 {
                     ImGui.Text("Max Health: " + Core.save.healthCapacity / 16);
@@ -124,9 +108,9 @@ public class OoTOnline : IBootstrapFilter
                     ImGui.SameLine();
                     if (ImGui.ArrowButton("Increase##HeartPieceUp", ImGuiNET.ImGuiDir.Up))
                     {
-                        if(Core.save.inventory.questStatus.heartPieces < 4)
+                        if(Core.save.inventory.questStatus.heartPieces < 40)
                         {
-                            Core.save.inventory.questStatus.heartPieces += 1;
+                            Core.save.inventory.questStatus.heartPieces += 10;
                         } else
                         {
                             Core.save.inventory.questStatus.heartPieces = 0;
@@ -136,9 +120,9 @@ public class OoTOnline : IBootstrapFilter
                     ImGui.SameLine();
                     if (ImGui.ArrowButton("Decrease##HeartPieceDown", ImGuiNET.ImGuiDir.Down))
                     {
-                        if (Core.save.inventory.questStatus.heartPieces > 0)
+                        if (Core.save.inventory.questStatus.heartPieces >= 10)
                         {
-                            Core.save.inventory.questStatus.heartPieces -= 1;
+                            Core.save.inventory.questStatus.heartPieces -= 10;
                         }
                     }
 
@@ -157,6 +141,24 @@ public class OoTOnline : IBootstrapFilter
                     }
                     ImGui.EndMenu();
                 }
+
+
+                if (ImGui.BeginMenu("Inventory"))
+                {
+                    for (int i = 0; i < 24; i++)
+                    {
+                        string s = ((InventorySlot)i).ToString();
+                        string v = Core.save.inventory.InventoryItems[(InventorySlot)i].ToString("X");
+                        ImGui.Text(s + ": 0x" + v);
+                        ImGui.SameLine();
+                        if (ImGui.Button("Set##" + i))
+                        {
+                            Core.save.inventory.InventoryItems[(InventorySlot)i] = InventoryTest[i];
+                        }
+                    }
+                    ImGui.EndMenu();
+                }
+
                 if (ImGui.BeginMenu("Equipment"))
                 {
                     ImGui.Text("Kokiri Sword: " + Core.save.inventory.equipment.kokiriSword);
@@ -248,6 +250,273 @@ public class OoTOnline : IBootstrapFilter
                     if (ImGui.Button("Set##hoverBoots"))
                     {
                         Core.save.inventory.equipment.hoverBoots = !Core.save.inventory.equipment.hoverBoots;
+                    }
+
+                    ImGui.EndMenu();
+                }
+
+                if (ImGui.BeginMenu("Upgrades"))
+                {
+                    ImGui.Text(String.Format("{0, 0} | {1, 5}", "Deku Stick Capacity: ", Core.save.inventory.upgrades.dekuStickCapacity.ToString()));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##DekuStickCapacityUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.dekuStickCapacity)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.None:
+                                Core.save.inventory.upgrades.dekuStickCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.dekuStickCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.dekuStickCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Max;
+                                break;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##DekuStickCapacityDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.dekuStickCapacity)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.dekuStickCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.None;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.dekuStickCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Max:
+                                Core.save.inventory.upgrades.dekuStickCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                        }
+                    }
+
+                    ImGui.Text(String.Format("{0, 0} | {1, 7}", "Deku Nut Capacity: ", Core.save.inventory.upgrades.dekuNutCapacity.ToString()));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##DekuNutCapacityUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.dekuNutCapacity)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.None:
+                                Core.save.inventory.upgrades.dekuNutCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.dekuNutCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.dekuNutCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Max;
+                                break;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##DekuNutCapacityDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.dekuNutCapacity)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.dekuNutCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.None;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.dekuNutCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Max:
+                                Core.save.inventory.upgrades.dekuNutCapacity = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                        }
+                    }
+
+                    ImGui.Text(String.Format("{0, 0} | {1, 5}", "Bullet Bag Capacity: ", Core.save.inventory.upgrades.bulletBag.ToString()));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##BulletBagUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.bulletBag)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.None:
+                                Core.save.inventory.upgrades.bulletBag = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.bulletBag = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.bulletBag = OoT.API.Enums.Capacity.AmmoUpgrade.Max;
+                                break;
+                        }
+                        Console.WriteLine(Core.save.inventory.upgrades.bulletBag.ToString());
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##BulletBagDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.bulletBag)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.bulletBag = OoT.API.Enums.Capacity.AmmoUpgrade.None;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.bulletBag = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Max:
+                                Core.save.inventory.upgrades.bulletBag = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                        }
+                        Console.WriteLine(Core.save.inventory.upgrades.bulletBag.ToString());
+                    }
+
+                    ImGui.Text(String.Format("{0, 0} | {1, 9}", "Quiver Capacity: " , Core.save.inventory.upgrades.quiver.ToString()));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##QuiverUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.quiver)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.None:
+                                Core.save.inventory.upgrades.quiver = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.quiver = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.quiver = OoT.API.Enums.Capacity.AmmoUpgrade.Max;
+                                break;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##QuiverDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.quiver)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.quiver = OoT.API.Enums.Capacity.AmmoUpgrade.None;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.quiver = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Max:
+                                Core.save.inventory.upgrades.quiver = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                        }
+                    }
+
+                    ImGui.Text(String.Format("{0, 0} | {1, 7}" ,"Bomb Bag Capacity: " ,Core.save.inventory.upgrades.bombBag.ToString()));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##BombBagUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.bombBag)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.None:
+                                Core.save.inventory.upgrades.bombBag = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.bombBag = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.bombBag = OoT.API.Enums.Capacity.AmmoUpgrade.Max;
+                                break;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##BombBagDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.bombBag)
+                        {
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Basic:
+                                Core.save.inventory.upgrades.bombBag = OoT.API.Enums.Capacity.AmmoUpgrade.None;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade:
+                                Core.save.inventory.upgrades.bombBag = OoT.API.Enums.Capacity.AmmoUpgrade.Basic;
+                                break;
+                            case OoT.API.Enums.Capacity.AmmoUpgrade.Max:
+                                Core.save.inventory.upgrades.bombBag = OoT.API.Enums.Capacity.AmmoUpgrade.Upgrade;
+                                break;
+                        }
+                    }
+
+                    ImGui.Text(String.Format("{0, 0} | {1, 16}", "Strength: ", Core.save.inventory.upgrades.strength.ToString()));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##StrengthUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.strength)
+                        {
+                            case OoT.API.Enums.Capacity.Strength.None:
+                                Core.save.inventory.upgrades.strength = OoT.API.Enums.Capacity.Strength.Silver;
+                                break;
+                            case OoT.API.Enums.Capacity.Strength.Silver:
+                                Core.save.inventory.upgrades.strength = OoT.API.Enums.Capacity.Strength.Golden;
+                                break;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##StrengthDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.strength)
+                        {
+                            case OoT.API.Enums.Capacity.Strength.Silver:
+                                Core.save.inventory.upgrades.strength = OoT.API.Enums.Capacity.Strength.None;
+                                break;
+                            case OoT.API.Enums.Capacity.Strength.Golden:
+                                Core.save.inventory.upgrades.strength = OoT.API.Enums.Capacity.Strength.Silver;
+                                break;
+                        }
+                    }
+
+                    ImGui.Text(String.Format("{0, 0} | {1, 19}", "Scale: " , Core.save.inventory.upgrades.scale));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##ScaleUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.scale)
+                        {
+                            case OoT.API.Enums.Capacity.Scales.None:
+                                Core.save.inventory.upgrades.scale = OoT.API.Enums.Capacity.Scales.Silver;
+                                break;
+                            case OoT.API.Enums.Capacity.Scales.Silver:
+                                Core.save.inventory.upgrades.scale = OoT.API.Enums.Capacity.Scales.Golden;
+                                break;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##ScaleDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.scale)
+                        {
+                            case OoT.API.Enums.Capacity.Scales.Silver:
+                                Core.save.inventory.upgrades.scale = OoT.API.Enums.Capacity.Scales.None;
+                                break;
+                            case OoT.API.Enums.Capacity.Scales.Golden:
+                                Core.save.inventory.upgrades.scale = OoT.API.Enums.Capacity.Scales.Silver;
+                                break;
+                        }
+                    }
+
+                    ImGui.Text(String.Format("{0, 0} | {1, 18}", "Wallet: " , Core.save.inventory.upgrades.wallet.ToString()));
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##WalletUp", ImGuiNET.ImGuiDir.Up))
+                    {
+                        switch (Core.save.inventory.upgrades.wallet)
+                        {
+                            case OoT.API.Enums.Capacity.Wallet.None:
+                                Core.save.inventory.upgrades.wallet = OoT.API.Enums.Capacity.Wallet.Adult;
+                                break;
+                            case OoT.API.Enums.Capacity.Wallet.Adult:
+                                Core.save.inventory.upgrades.wallet = OoT.API.Enums.Capacity.Wallet.Giant;
+                                break;
+                            case OoT.API.Enums.Capacity.Wallet.Giant:
+                                Core.save.inventory.upgrades.wallet = OoT.API.Enums.Capacity.Wallet.Tycoon;
+                                break;
+                        }
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.ArrowButton("Set##WalletDown", ImGuiNET.ImGuiDir.Down))
+                    {
+                        switch (Core.save.inventory.upgrades.wallet)
+                        {
+                            case OoT.API.Enums.Capacity.Wallet.Adult:
+                                Core.save.inventory.upgrades.wallet = OoT.API.Enums.Capacity.Wallet.None;
+                                break;
+                            case OoT.API.Enums.Capacity.Wallet.Giant:
+                                Core.save.inventory.upgrades.wallet = OoT.API.Enums.Capacity.Wallet.Adult;
+                                break;
+                            case OoT.API.Enums.Capacity.Wallet.Tycoon:
+                                Core.save.inventory.upgrades.wallet = OoT.API.Enums.Capacity.Wallet.Giant;
+                                break;
+                        }
                     }
 
                     ImGui.EndMenu();

@@ -48,7 +48,6 @@ namespace Z64Online.OoTOnline
             }
             if (clientStorage.lastPushHash != clientStorage.saveManager.hash)
             {
-                
                 Z64O_UpdateSaveDataPacket packet = new Z64O_UpdateSaveDataPacket(save, clientStorage.world, NetworkClientData.me, NetworkClientData.lobby);
                 NetworkSenders.Client.SendPacket(packet, NetworkClientData.lobby);
                 clientStorage.lastPushHash = clientStorage.saveManager.hash;
