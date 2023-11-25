@@ -71,7 +71,7 @@ namespace Z64Online.OoTOnline
 
     public class OoTOnlineQuestStatusSync
     {
-        public u16 healthCapacity; // 4 = 1 Heart
+        public u16 healthCapacity; 
         public u8 heartPieces; // 0 - 4 , never set 4
         public u8 magicLevel;
         public s16 gsTokens;

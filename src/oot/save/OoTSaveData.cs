@@ -350,6 +350,7 @@ namespace Z64Online.OoTOnline
                 Core.save.healthCapacity = incoming.healthCapacity;
                 Core.save.inventory.questStatus.gsTokens = incoming.gsTokens;
                 Core.save.isDoubleDefenseAcquired = incoming.hasDoubleDefense;
+                Core.save.inventory.gsTokens = incoming.gsTokens;
             }
         }
 
