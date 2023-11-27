@@ -76,6 +76,7 @@ namespace Z64Online.OoTOnline
             }
             var world = storage.worlds[packet.player.data.world];
             storage.saveManager.Merge(packet.save, world.save);
+            storage.worlds[packet.player.data.world] = world;
             NetworkSenders.Server.SendPacket(new Z64O_UpdateSaveDataPacket(world.save, packet.player.data.world, packet.player, packet.lobby), packet.lobby);
         }
 

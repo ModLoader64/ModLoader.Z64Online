@@ -1,8 +1,6 @@
-﻿
-using Cake.Core;
-using OoT.API;
+﻿using OoT.API;
 using OoT.API.Enums;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Buffer = NodeBuffer.Buffer;
 
 namespace Z64Online.OoTOnline
 {
@@ -114,6 +112,10 @@ namespace Z64Online.OoTOnline
     public class OoTOnlineFlagSync 
     {
         public SceneFlagStruct[] sceneFlags = new SceneFlagStruct[124];
+        public Buffer eventChkInf = new Buffer(0x1C);
+        public Buffer itemGetInf = new Buffer(0x8);
+        public Buffer infTable = new Buffer(0x3C);
+        public Buffer gsFlags = new Buffer(0x18);
     }
 
     public class SceneFlagStruct

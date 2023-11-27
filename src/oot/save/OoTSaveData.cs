@@ -226,14 +226,56 @@ namespace Z64Online.OoTOnline
             {
                 if (!save.sceneFlags[i].Equals(incoming.sceneFlags[i]))
                 {
-                    WrapperSavedSceneFlags temp = Core.save.GetSceneFlagsFromIndex(i);
-                    SceneFlagStruct cur = new SceneFlagStruct(temp.chest, temp.swch, temp.clear, temp.collect, temp.unk, temp.rooms, temp.floors);
-                    if (!incoming.sceneFlags[i].Equals(cur))
-                    {
-                        Console.WriteLine($"Scene[{i}] Flag Update: {JsonConvert.SerializeObject(cur)} -> {JsonConvert.SerializeObject(incoming.sceneFlags[i])}");
+                    Console.WriteLine($"Scene[{i}] Flag Update: {JsonConvert.SerializeObject(save.sceneFlags[i])} -> {JsonConvert.SerializeObject(incoming.sceneFlags[i])}");
+                    save.sceneFlags[i] = incoming.sceneFlags[i];
+                }
+            }
 
-                    }
-                    save.sceneFlags = incoming.sceneFlags;
+            for (int i = 0; i < incoming.eventChkInf.Size; i++)
+            {
+                u8 s_flg = save.eventChkInf.ReadU8(i);
+                u8 i_flg = incoming.eventChkInf.ReadU8(i);
+                if (s_flg != i_flg)
+                {
+                    u8 result = (u8)(s_flg | i_flg);
+                    Console.WriteLine($"eventChkInf Flag {i} : 0x{s_flg.ToString("X")} | 0x{i_flg.ToString("X")} : 0x{result.ToString("X")}");
+                    save.eventChkInf.WriteU8(i, result);
+                }
+            }
+
+            for (int i = 0; i < incoming.infTable.Size; i++)
+            {
+                u8 s_flg = save.infTable.ReadU8(i);
+                u8 i_flg = incoming.infTable.ReadU8(i);
+                if (s_flg != i_flg)
+                {
+                    u8 result = (u8)(s_flg | i_flg);
+                    Console.WriteLine($"infTable Flag {i} : 0x{s_flg.ToString("X")} | 0x{i_flg.ToString("X")} : 0x{result.ToString("X")}");
+                    save.infTable.WriteU8(i, result);
+                }
+            }
+
+            for (int i = 0; i < incoming.itemGetInf.Size; i++)
+            {
+                u8 s_flg = save.itemGetInf.ReadU8(i);
+                u8 i_flg = incoming.itemGetInf.ReadU8(i);
+                if (s_flg != i_flg)
+                {
+                    u8 result = (u8)(s_flg | i_flg);
+                    Console.WriteLine($"itemGetInf Flag {i} : 0x{s_flg.ToString("X")} | 0x{i_flg.ToString("X")} : 0x{result.ToString("X")}");
+                    save.itemGetInf.WriteU8(i, result);
+                }
+            }
+
+            for (int i = 0; i < incoming.gsFlags.Size; i++)
+            {
+                u8 s_flg = save.gsFlags.ReadU8(i);
+                u8 i_flg = incoming.gsFlags.ReadU8(i);
+                if (s_flg != i_flg)
+                {
+                    u8 result = (u8)(s_flg | i_flg);
+                    Console.WriteLine($"gsFlags Flag {i} : 0x{s_flg.ToString("X")} | 0x{i_flg.ToString("X")} : 0x{result.ToString("X")}");
+                    save.gsFlags.WriteU8(i, result);
                 }
             }
         }
@@ -428,20 +470,81 @@ namespace Z64Online.OoTOnline
         {
             if (save != null)
             {
-                save.sceneFlags = incoming.sceneFlags;
+                for (int i = 0; i < incoming.sceneFlags.Length; i++)
+                {
+                    save.sceneFlags[i].chest |= incoming.sceneFlags[i].chest;
+                    save.sceneFlags[i].swch |= incoming.sceneFlags[i].swch;
+                    save.sceneFlags[i].clear |= incoming.sceneFlags[i].clear;
+                    save.sceneFlags[i].collect |= incoming.sceneFlags[i].collect;
+                    save.sceneFlags[i].unk |= incoming.sceneFlags[i].unk;
+                    save.sceneFlags[i].rooms |= incoming.sceneFlags[i].rooms;
+                    save.sceneFlags[i].floors |= incoming.sceneFlags[i].floors;
+
+                }
+                for (int i = 0; i < incoming.eventChkInf.Size; i += 4)
+                {
+                    u32 val = save.eventChkInf.ReadU32(i);
+                    save.eventChkInf.WriteU32(i, val |= incoming.eventChkInf.ReadU32(i));
+                }
+                for (int i = 0; i < incoming.infTable.Size; i += 4)
+                {
+                    u32 val = save.infTable.ReadU32(i);
+                    save.infTable.WriteU32(i, val |= incoming.infTable.ReadU32(i));
+                }
+                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                {
+                    u32 val = save.itemGetInf.ReadU32(i);
+                    save.itemGetInf.WriteU32(i, val |= incoming.itemGetInf.ReadU32(i));
+                }
+                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                {
+                    u32 val = save. gsFlags.ReadU32(i);
+                    save.gsFlags.WriteU32(i, val |= incoming.gsFlags.ReadU32(i));
+                }
             }
             else
             {
                 for (int i = 0; i < incoming.sceneFlags.Length; i++)
-                { 
-                    Core.save.sceneFlags[i].chest = incoming.sceneFlags[i].chest;
-                    Core.save.sceneFlags[i].swch = incoming.sceneFlags[i].swch;
-                    Core.save.sceneFlags[i].clear = incoming.sceneFlags[i].clear;
-                    Core.save.sceneFlags[i].collect = incoming.sceneFlags[i].collect;
-                    Core.save.sceneFlags[i].unk = incoming.sceneFlags[i].unk;
-                    Core.save.sceneFlags[i].rooms = incoming.sceneFlags[i].rooms;
-                    Core.save.sceneFlags[i].floors = incoming.sceneFlags[i].floors;
+                {
+                    Core.save.sceneFlags[i].chest |= incoming.sceneFlags[i].chest;
+                    Core.save.sceneFlags[i].swch |= incoming.sceneFlags[i].swch;
+                    Core.save.sceneFlags[i].clear |= incoming.sceneFlags[i].clear;
+                    Core.save.sceneFlags[i].collect |= incoming.sceneFlags[i].collect;
+                    Core.save.sceneFlags[i].unk |= incoming.sceneFlags[i].unk;
+                    Core.save.sceneFlags[i].rooms |= incoming.sceneFlags[i].rooms;
+                    Core.save.sceneFlags[i].floors |= incoming.sceneFlags[i].floors;
                 }
+
+                Buffer _eventChkInf = Core.save.eventChkInf;
+                Buffer _infTable = Core.save.infTable;
+                Buffer _itemGetInf = Core.save.itemGetInf;
+                Buffer _gsFlags = Core.save.gsFlags;
+
+                for (int i = 0; i < incoming.eventChkInf.Size; i += 4)
+                {
+                    u32 val = _eventChkInf.ReadU32(i);
+                    _eventChkInf.WriteU32(i, val |= incoming.eventChkInf.ReadU32(i));
+                }
+                for (int i = 0; i < incoming.infTable.Size; i += 4)
+                {
+                    u32 val = _infTable.ReadU32(i);
+                    _infTable.WriteU32(i, val |= incoming.infTable.ReadU32(i));
+                }
+                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                {
+                    u32 val = _itemGetInf.ReadU32(i);
+                    _itemGetInf.WriteU32(i, val |= incoming.itemGetInf.ReadU32(i));
+                }
+                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                {
+                    u32 val = _gsFlags.ReadU32(i);
+                    _gsFlags.WriteU32(i, val |= incoming.gsFlags.ReadU32(i));
+                }
+
+                Core.save.eventChkInf = _eventChkInf;
+                Core.save.infTable = _infTable;
+                Core.save.itemGetInf = _itemGetInf;
+                Core.save.gsFlags = _gsFlags;
             }
         }
 
@@ -460,28 +563,61 @@ namespace Z64Online.OoTOnline
                 sync.dungeon.keys[i] = save.inventory.dungeon.keys[i];
             }
 
-            Buffer flags = save.GetSceneFlagsRaw();
+            Buffer sceneFlags = save.GetSceneFlagsRaw();
 
             if (RomFlags.isRando)
             {
                 for (int i = 0; i < OoTOnline.rando.badSyncData.saveBitMask.Size; i++)
                 {
-                    flags.WriteU8(i, (u8)(flags.ReadU8(i) & OoTOnline.rando.badSyncData.saveBitMask.ReadU8(i)));
+                    sceneFlags.WriteU8(i, (u8)(sceneFlags.ReadU8(i) & OoTOnline.rando.badSyncData.saveBitMask.ReadU8(i)));
                 }
             }
 
             for (int i = 0; i < sync.flags.sceneFlags.Length; i++)
             {
                 sync.flags.sceneFlags[i] = new SceneFlagStruct(
-                    flags.ReadU32((i * 0x1C) + 0x0),
-                    flags.ReadU32((i * 0x1C) + 0x4),
-                    flags.ReadU32((i * 0x1C) + 0x8),
-                    flags.ReadU32((i * 0x1C) + 0xC),
-                    flags.ReadU32((i * 0x1C) + 0x10),
-                    flags.ReadU32((i * 0x1C) + 0x14),
-                    flags.ReadU32((i * 0x1C) + 0x18));
+                    sceneFlags.ReadU32((i * 0x1C) + 0x0),
+                    sceneFlags.ReadU32((i * 0x1C) + 0x4),
+                    sceneFlags.ReadU32((i * 0x1C) + 0x8),
+                    sceneFlags.ReadU32((i * 0x1C) + 0xC),
+                    sceneFlags.ReadU32((i * 0x1C) + 0x10),
+                    sceneFlags.ReadU32((i * 0x1C) + 0x14),
+                    sceneFlags.ReadU32((i * 0x1C) + 0x18));
+            }
+
+            sync.flags.eventChkInf = save.eventChkInf;
+
+            // Mask some event flags so they don't get sent to anyone
+            for (int i = 0; i < save.eventChkInf.Size; i++)
+            {
+                u8 value = save.eventChkInf.ReadU8(i);
+
+                if (i == 2)
+                {
+                    sync.flags.eventChkInf.WriteU8(i, (u8)(value & 0xF7)); // Rented Horse from Ingo
+                }
+                if (i == 13)
+                {
+                    sync.flags.eventChkInf.WriteU8(i, (u8)(value & 0xDF)); // Played Song of Storms in Kakariko Widmill
+                }
 
             }
+
+            sync.flags.itemGetInf = save.itemGetInf;
+            sync.flags.infTable = save.infTable;
+
+            // Mask some more flags so they don't get sent
+            for (int i = 0; i < save.infTable.Size; i++)
+            {
+                u8 value = save.infTable.ReadU8(i);
+
+                if (i == 15)
+                {
+                    sync.flags.infTable.WriteU8(i, (u8)(value & 0xFD)); // Hyrule Castle Gate 
+                }
+            }
+
+            sync.flags.gsFlags = save.gsFlags;
 
             sync.equipment.kokiriSword = save.inventory.equipment.kokiriSword;
             sync.equipment.masterSword = save.inventory.equipment.masterSword;
