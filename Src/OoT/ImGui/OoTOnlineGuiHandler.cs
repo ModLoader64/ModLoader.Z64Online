@@ -181,7 +181,7 @@ namespace Z64Online.OoTOnline
                             {
                                 ImGui.Text($"Keys: {Core.save.inventory.dungeon.keys[i].count}");
                                 ImGui.SameLine();
-                                if(ImGui.ArrowButton($"KeysUp##{i}", ImGuiNET.ImGuiDir.Up))
+                                if (ImGui.ArrowButton($"KeysUp##{i}", ImGuiNET.ImGuiDir.Up))
                                 {
                                     DungeonKeys key = Core.save.inventory.dungeon.keys[i];
                                     key.count += 1;

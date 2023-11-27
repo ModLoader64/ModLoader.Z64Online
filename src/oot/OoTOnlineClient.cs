@@ -89,7 +89,7 @@ namespace Z64Online.OoTOnline
             if (packet.save != null)
             {
                 Console.WriteLine("Syncing save with server.");
-                clientStorage.saveManager.forceOverrideSave(packet.save);
+                clientStorage.saveManager.ForceOverrideSave(packet.save);
                 clientStorage.saveManager.CreateSave();
                 
                 clientStorage.lastPushHash = clientStorage.saveManager.hash;
@@ -130,8 +130,9 @@ namespace Z64Online.OoTOnline
             if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid()) { return; }
             if (packet.world != clientStorage.world) { return; }
             if (!clientStorage.first_time_sync) { return; }
+            if (packet.player.uuid != NetworkClientData.me.uuid) { return; }
             Console.WriteLine("OnSaveUpdate");
-            clientStorage.saveManager.ApplySave(packet.save);
+            clientStorage.saveManager.Apply(packet.save);
             // Update hash.
             clientStorage.saveManager.CreateSave();
             
@@ -170,16 +171,47 @@ namespace Z64Online.OoTOnline
         }
 
 
-        [EventHandler("OnRomLoaded")]
+        [EventHandler("EventRomLoaded")]
         public static void OnRomLoaded(EventRomLoaded e)
         {
-
+            CheckOoTR(e.rom);
         }
 
         public static void Destroy()
         {
             Console.WriteLine("OoTOnlineClient: Destroy");
         }
+
+        //------------------------------
+        // OoTRando Handling
+        //------------------------------
+
+        public static void CheckOoTR(byte[] rom)
+        {
+            int start = 0x20;
+            int prog = 0;
+            int _byte = rom[start];
+            int terminator = 0;
+            while (_byte != terminator)
+            {
+                prog++;
+                _byte = rom[start + prog];
+            }
+            prog++;
+            if (rom[start + prog] > 0)
+            {
+                byte[] ver = rom[(start + prog - 1)..(start + prog - 1 + 0x4)];
+                Console.WriteLine($"OoT Randomizer detected. Version: {Convert.ToHexString(ver)}");
+                RomFlags.isRando = true;
+                OoTOnline.rando = new OoTR(new OoTR_BadSyncData());
+            } else
+            {
+                RomFlags.isVanilla = true;
+                Console.WriteLine($"Vanilla rom detected.");
+            }
+
+        }
+
 
         //------------------------------
         // Tick Update

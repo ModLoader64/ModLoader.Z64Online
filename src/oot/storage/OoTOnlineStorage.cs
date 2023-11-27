@@ -34,15 +34,16 @@ namespace Z64Online.OoTOnline
     {
         public bool isOoTR = false;
         public bool isVanilla = false;
-        public OoTOnlineInventorySync? inventory = new OoTOnlineInventorySync();
+        public OoTOnlineSaveSync? data = new OoTOnlineSaveSync();
     }
 
-    public class OoTOnlineInventorySync
+    public class OoTOnlineSaveSync
     {
         public InventoryItem[] items = new InventoryItem[(int)InventorySlot.COUNT];
         public OoTOnlineEquipmentSync equipment = new OoTOnlineEquipmentSync();
         public OoTOnlineQuestStatusSync questStatus = new OoTOnlineQuestStatusSync();
         public OoTOnlineDungeonSync dungeon = new OoTOnlineDungeonSync();
+        public OoTOnlineFlagSync flags = new OoTOnlineFlagSync();
     }
 
     public class OoTOnlineEquipmentSync
@@ -108,6 +109,46 @@ namespace Z64Online.OoTOnline
     {
         public DungeonItems[] items = new DungeonItems[0x14];
         public DungeonKeys[] keys = new DungeonKeys[0x14];
+    }
+
+    public class OoTOnlineFlagSync 
+    {
+        public SceneFlagStruct[] sceneFlags = new SceneFlagStruct[124];
+    }
+
+    public class SceneFlagStruct
+    {
+        public u32 chest;
+        public u32 swch;
+        public u32 clear;
+        public u32 collect;
+        public u32 unk;
+        public u32 rooms;
+        public u32 floors;
+
+        public SceneFlagStruct(u32 chest, u32 swch, u32 clear, u32 collect, u32 unk, u32 rooms, u32 floors)
+        {
+            this.chest = chest;
+            this.swch = swch;
+            this.clear = clear;
+            this.collect = collect;
+            this.unk = unk;
+            this.rooms = rooms;
+            this.floors = floors;
+        }
+
+        public bool Equals(SceneFlagStruct other)
+        {
+            if(this.chest != other.chest) return false;
+            if (this.swch != other.swch) return false;
+            if (this.clear != other.clear) return false;
+            if (this.collect != other.collect) return false;
+            if (this.unk != other.unk) return false;
+            if (this.rooms != other.rooms) return false;
+            if (this.floors != other.floors) return false;
+            return true;
+        }
+
     }
 
     public class OOTKeyRingServer : IKeyRing

@@ -9,7 +9,7 @@ public class OoTOnline : IBootstrapFilter
 
     public static N64RomHeader? romHeader;
     public static bool isOpen = true;
-    public static bool isRando = false;
+    public static OoTR ?rando;
     
     public static bool DoesLoad(byte[] e)
     {
@@ -24,11 +24,6 @@ public class OoTOnline : IBootstrapFilter
             Z64Online.currentGame.OoTDBG = true;
         }
         return Z64Online.currentGame.OoT || Z64Online.currentGame.OoTDBG;
-    }
-
-    public static void InitOoT()
-    {
-        // TODO: Core handles this stuff so this is deprecated, however might have to init more things later via OoTO anyway
     }
 
     [OnInit]

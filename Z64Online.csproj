@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Buffer\Buffer.csproj" />
     <ProjectReference Include="..\..\ModLoader.API\ModLoader.API.csproj" />
     <ProjectReference Include="..\..\ModLoader.Build\ModLoader.Build.csproj" />
     <ProjectReference Include="..\..\ModLoader.CLI\ModLoader.CLI.csproj" />
@@ -19,6 +20,9 @@
     <ProjectReference Include="..\LibOoT\OoT\OoT.csproj" />
     <Reference Include="ImGui.NET.API">
       <HintPath>..\..\ModLoader.API\bin\Debug\net7.0\ImGui.NET.API.dll</HintPath>
+    </Reference>
+    <Reference Include="ModLoader.OotR.Sigs">
+      <HintPath>Src\OoT\Compat\OoTR\Sigs\OotR_v8.0_sigs.dll</HintPath>
     </Reference>
 	 <Using Include="System.Byte" Alias="u8" />
 	 <Using Include="System.UInt16" Alias="u16" />

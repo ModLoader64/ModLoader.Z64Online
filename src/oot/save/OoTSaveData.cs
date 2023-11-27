@@ -1,5 +1,7 @@
 ﻿using OoT.API;
 using OoT;
+using Buffer = NodeBuffer.Buffer;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace Z64Online.OoTOnline
@@ -10,35 +12,36 @@ namespace Z64Online.OoTOnline
         public OoTOSyncSave CreateSave()
         {
             OoTOSyncSave syncSave = new OoTOSyncSave();
-            syncSave.inventory = CreateInventory(Core.save);
+            syncSave.data = CreateInventory(Core.save);
             hash = ModLoader.API.Utils.GetHashSHA1(ModLoader.API.Utils.ObjectToByteArray(syncSave));
             return syncSave;
         }
 
-        public void ApplySave(OoTOSyncSave incoming)
+        public void Apply(OoTOSyncSave incoming)
         {
-            MergeSave(incoming);
+            Merge(incoming);
         }
 
-        public void MergeSave(OoTOSyncSave incoming, OoTOSyncSave save = null)
+        public void Merge(OoTOSyncSave incoming, OoTOSyncSave save = null)
         {
             // Write to local OoTO Save if supplied, otherwise write to save file directly
             if (save != null)
             {
-                MergeInventory(incoming.inventory, save.inventory);
+                MergeSave(incoming.data, save.data);
             }
             else
             {
-                forceOverrideSave(incoming);
+                ForceOverrideSave(incoming);
             }
         }
 
-        public void MergeInventory(OoTOnlineInventorySync incoming, OoTOnlineInventorySync save)
+        public void MergeSave(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save)
         {
             MergeItems(incoming.items, save.items);
             MergeEquipment(incoming.equipment, save.equipment);
             MergeQuestStatus(incoming.questStatus, save.questStatus);
             MergeDungeonData(incoming.dungeon, save.dungeon);
+            MergeFlags(incoming.flags, save.flags);
         }
 
         public void MergeItems(InventoryItem[] incoming, InventoryItem[] save)
@@ -217,22 +220,42 @@ namespace Z64Online.OoTOnline
             }
         }
 
-        public void forceOverrideSave(OoTOSyncSave incoming, OoTOSyncSave save = null)
+        public void MergeFlags(OoTOnlineFlagSync incoming, OoTOnlineFlagSync save)
+        {
+            for (int i = 0; i < incoming.sceneFlags.Length; i++)
+            {
+                if (!save.sceneFlags[i].Equals(incoming.sceneFlags[i]))
+                {
+                    WrapperSavedSceneFlags temp = Core.save.GetSceneFlagsFromIndex(i);
+                    SceneFlagStruct cur = new SceneFlagStruct(temp.chest, temp.swch, temp.clear, temp.collect, temp.unk, temp.rooms, temp.floors);
+                    if (!incoming.sceneFlags[i].Equals(cur))
+                    {
+                        Console.WriteLine($"Scene[{i}] Flag Update: {JsonConvert.SerializeObject(cur)} -> {JsonConvert.SerializeObject(incoming.sceneFlags[i])}");
+
+                    }
+                    save.sceneFlags = incoming.sceneFlags;
+                }
+            }
+        }
+
+        public void ForceOverrideSave(OoTOSyncSave incoming, OoTOSyncSave save = null)
         {
             // Write to local OoTO Items if supplied, otherwise write to save file directly
             if (save != null)
             {
-                OverrideItems(incoming.inventory.items, save.inventory.items);
-                OverrideEquipment(incoming.inventory.equipment, save.inventory.equipment);
-                OverrideQuestStatus(incoming.inventory.questStatus, save.inventory.questStatus);
-                OverrideDungeonData(incoming.inventory.dungeon, save.inventory.dungeon);
+                OverrideItems(incoming.data.items, save.data.items);
+                OverrideEquipment(incoming.data.equipment, save.data.equipment);
+                OverrideQuestStatus(incoming.data.questStatus, save.data.questStatus);
+                OverrideDungeonData(incoming.data.dungeon, save.data.dungeon);
+                OverrideFlags(incoming.data.flags, save.data.flags);
             }
             else
             {
-                OverrideItems(incoming.inventory.items);
-                OverrideEquipment(incoming.inventory.equipment);
-                OverrideQuestStatus(incoming.inventory.questStatus);
-                OverrideDungeonData(incoming.inventory.dungeon);
+                OverrideItems(incoming.data.items);
+                OverrideEquipment(incoming.data.equipment);
+                OverrideQuestStatus(incoming.data.questStatus);
+                OverrideDungeonData(incoming.data.dungeon);
+                OverrideFlags(incoming.data.flags);
             }
         }
 
@@ -401,9 +424,30 @@ namespace Z64Online.OoTOnline
             }
         }
 
-        public OoTOnlineInventorySync CreateInventory(WrapperSaveContext save)
+        public void OverrideFlags(OoTOnlineFlagSync incoming, OoTOnlineFlagSync save = null)
         {
-            OoTOnlineInventorySync sync = new OoTOnlineInventorySync();
+            if (save != null)
+            {
+                save.sceneFlags = incoming.sceneFlags;
+            }
+            else
+            {
+                for (int i = 0; i < incoming.sceneFlags.Length; i++)
+                { 
+                    Core.save.sceneFlags[i].chest = incoming.sceneFlags[i].chest;
+                    Core.save.sceneFlags[i].swch = incoming.sceneFlags[i].swch;
+                    Core.save.sceneFlags[i].clear = incoming.sceneFlags[i].clear;
+                    Core.save.sceneFlags[i].collect = incoming.sceneFlags[i].collect;
+                    Core.save.sceneFlags[i].unk = incoming.sceneFlags[i].unk;
+                    Core.save.sceneFlags[i].rooms = incoming.sceneFlags[i].rooms;
+                    Core.save.sceneFlags[i].floors = incoming.sceneFlags[i].floors;
+                }
+            }
+        }
+
+        public OoTOnlineSaveSync CreateInventory(WrapperSaveContext save)
+        {
+            OoTOnlineSaveSync sync = new OoTOnlineSaveSync();
 
             for (int i = 0; i < (int)InventorySlot.COUNT; i++)
             {
@@ -414,6 +458,29 @@ namespace Z64Online.OoTOnline
             {
                 sync.dungeon.items[i] = save.inventory.dungeon.items[i];
                 sync.dungeon.keys[i] = save.inventory.dungeon.keys[i];
+            }
+
+            Buffer flags = save.GetSceneFlagsRaw();
+
+            if (RomFlags.isRando)
+            {
+                for (int i = 0; i < OoTOnline.rando.badSyncData.saveBitMask.Size; i++)
+                {
+                    flags.WriteU8(i, (u8)(flags.ReadU8(i) & OoTOnline.rando.badSyncData.saveBitMask.ReadU8(i)));
+                }
+            }
+
+            for (int i = 0; i < sync.flags.sceneFlags.Length; i++)
+            {
+                sync.flags.sceneFlags[i] = new SceneFlagStruct(
+                    flags.ReadU32((i * 0x1C) + 0x0),
+                    flags.ReadU32((i * 0x1C) + 0x4),
+                    flags.ReadU32((i * 0x1C) + 0x8),
+                    flags.ReadU32((i * 0x1C) + 0xC),
+                    flags.ReadU32((i * 0x1C) + 0x10),
+                    flags.ReadU32((i * 0x1C) + 0x14),
+                    flags.ReadU32((i * 0x1C) + 0x18));
+
             }
 
             sync.equipment.kokiriSword = save.inventory.equipment.kokiriSword;
