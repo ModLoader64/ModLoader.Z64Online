@@ -227,7 +227,13 @@ namespace Z64Online.OoTOnline
                 if (!save.sceneFlags[i].Equals(incoming.sceneFlags[i]))
                 {
                     Console.WriteLine($"Scene[{i}] Flag Update: {JsonConvert.SerializeObject(save.sceneFlags[i])} -> {JsonConvert.SerializeObject(incoming.sceneFlags[i])}");
-                    save.sceneFlags[i] = incoming.sceneFlags[i];
+                    save.sceneFlags[i].chest |= incoming.sceneFlags[i].chest;
+                    save.sceneFlags[i].swch |= incoming.sceneFlags[i].swch;
+                    save.sceneFlags[i].clear |= incoming.sceneFlags[i].clear;
+                    save.sceneFlags[i].collect |= incoming.sceneFlags[i].collect;
+                    save.sceneFlags[i].unk |= incoming.sceneFlags[i].unk;
+                    save.sceneFlags[i].rooms |= incoming.sceneFlags[i].rooms;
+                    save.sceneFlags[i].floors |= incoming.sceneFlags[i].floors;
                 }
             }
 
@@ -381,7 +387,6 @@ namespace Z64Online.OoTOnline
             // TODO: Make this less stupid
             if (save != null)
             {
-
                 save.songLullaby = incoming.songLullaby;
                 save.songEpona = incoming.songEpona;
                 save.songTime = incoming.songTime;
@@ -479,27 +484,35 @@ namespace Z64Online.OoTOnline
                     save.sceneFlags[i].unk |= incoming.sceneFlags[i].unk;
                     save.sceneFlags[i].rooms |= incoming.sceneFlags[i].rooms;
                     save.sceneFlags[i].floors |= incoming.sceneFlags[i].floors;
+                }
 
-                }
-                for (int i = 0; i < incoming.eventChkInf.Size; i += 4)
+                for (int i = 0; i < incoming.eventChkInf.Size; i++)
                 {
-                    u32 val = save.eventChkInf.ReadU32(i);
-                    save.eventChkInf.WriteU32(i, val |= incoming.eventChkInf.ReadU32(i));
+                    u8 val = save.eventChkInf.ReadU8(i);
+                    u8 val2 = incoming.eventChkInf.ReadU8(i);
+                    u8 result = val |= val2;
+                    save.eventChkInf.WriteU8(i, result);
                 }
-                for (int i = 0; i < incoming.infTable.Size; i += 4)
+                for (int i = 0; i < incoming.infTable.Size; i++)
                 {
-                    u32 val = save.infTable.ReadU32(i);
-                    save.infTable.WriteU32(i, val |= incoming.infTable.ReadU32(i));
+                    u8 val = save.infTable.ReadU8(i);
+                    u8 val2 = incoming.infTable.ReadU8(i);
+                    u8 result = val |= val2;
+                    save.infTable.WriteU8(i, result);
                 }
-                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                for (int i = 0; i < incoming.itemGetInf.Size; i++)
                 {
-                    u32 val = save.itemGetInf.ReadU32(i);
-                    save.itemGetInf.WriteU32(i, val |= incoming.itemGetInf.ReadU32(i));
+                    u8 val = save.itemGetInf.ReadU8(i);
+                    u8 val2 = incoming.itemGetInf.ReadU8(i);
+                    u8 result = val |= val2;
+                    save.itemGetInf.WriteU8(i, result);
                 }
-                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                for (int i = 0; i < incoming.gsFlags.Size; i++)
                 {
-                    u32 val = save. gsFlags.ReadU32(i);
-                    save.gsFlags.WriteU32(i, val |= incoming.gsFlags.ReadU32(i));
+                    u8 val = save.gsFlags.ReadU8(i);
+                    u8 val2 = incoming.gsFlags.ReadU8(i);
+                    u8 result = val |= val2;
+                    save.gsFlags.WriteU8(i, result);
                 }
             }
             else
@@ -520,25 +533,33 @@ namespace Z64Online.OoTOnline
                 Buffer _itemGetInf = Core.save.itemGetInf;
                 Buffer _gsFlags = Core.save.gsFlags;
 
-                for (int i = 0; i < incoming.eventChkInf.Size; i += 4)
+                for (int i = 0; i < incoming.eventChkInf.Size; i++)
                 {
-                    u32 val = _eventChkInf.ReadU32(i);
-                    _eventChkInf.WriteU32(i, val |= incoming.eventChkInf.ReadU32(i));
+                    u8 val = _eventChkInf.ReadU8(i);
+                    u8 val2 = incoming.eventChkInf.ReadU8(i);
+                    u8 result = val |= val2;
+                    _eventChkInf.WriteU8(i, result);
                 }
-                for (int i = 0; i < incoming.infTable.Size; i += 4)
+                for (int i = 0; i < incoming.infTable.Size; i++)
                 {
-                    u32 val = _infTable.ReadU32(i);
-                    _infTable.WriteU32(i, val |= incoming.infTable.ReadU32(i));
+                    u8 val = _infTable.ReadU8(i);
+                    u8 val2 = incoming.infTable.ReadU8(i);
+                    u8 result = val |= val2;
+                    _infTable.WriteU8(i, result);
                 }
-                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                for (int i = 0; i < incoming.itemGetInf.Size; i++)
                 {
-                    u32 val = _itemGetInf.ReadU32(i);
-                    _itemGetInf.WriteU32(i, val |= incoming.itemGetInf.ReadU32(i));
+                    u8 val = _itemGetInf.ReadU8(i);
+                    u8 val2 = incoming.itemGetInf.ReadU8(i);
+                    u8 result = val |= val2;
+                    _itemGetInf.WriteU8(i, result);
                 }
-                for (int i = 0; i < incoming.itemGetInf.Size; i += 4)
+                for (int i = 0; i < incoming.gsFlags.Size; i++)
                 {
-                    u32 val = _gsFlags.ReadU32(i);
-                    _gsFlags.WriteU32(i, val |= incoming.gsFlags.ReadU32(i));
+                    u8 val = _gsFlags.ReadU8(i);
+                    u8 val2 = incoming.gsFlags.ReadU8(i);
+                    u8 result = val |= val2;
+                    _gsFlags.WriteU8(i, result);
                 }
 
                 Core.save.eventChkInf = _eventChkInf;

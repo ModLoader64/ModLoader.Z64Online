@@ -1,6 +1,7 @@
 ﻿using ModLoader.API;
 using Network.Packets;
 using Z64Online.OoTOnline;
+using Buffer = NodeBuffer.Buffer;
 
 namespace Z64Online;
 
@@ -17,6 +18,32 @@ public class Z64O_ScenePacket
         this.age = age;
         this.player = player;
         this.lobby = lobby;
+    }
+}
+
+public class Z64O_ClientSceneContextUpdate
+{
+    public u32 chests { get; set; }
+    public u32 switches { get; set; }
+    public u32 collect { get; set; }
+    public u32 clear { get; set; }
+    public u32 temp { get; set; }
+    public u16 scene { get; set; }
+    public int world { get; set; }
+    public string lobby { get; set; }
+    public NetworkPlayer player { get; set; }
+
+    public Z64O_ClientSceneContextUpdate(u32 chests, u32 switches, u32 collect, u32 clear, u32 temp, u16 scene, int world, string lobby, NetworkPlayer player)
+    {
+        this.chests = chests;
+        this.switches = switches;
+        this.collect = collect;
+        this.clear = clear;
+        this.temp = temp;
+        this.scene = scene;
+        this.world = world;
+        this.lobby = lobby;
+        this.player = player;
     }
 }
 

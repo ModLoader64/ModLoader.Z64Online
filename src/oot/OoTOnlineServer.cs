@@ -11,6 +11,23 @@ namespace Z64Online.OoTOnline
     {
         public static List<OoTOnlineStorage> lobbyStorage = new List<OoTOnlineStorage>();
 
+        public static void SendPacketToPlayersInScene(dynamic packet)
+        {
+            if (packet == null) return;
+            Console.WriteLine("SendPacketToPlayersInScene");
+            OoTOnlineStorage storage = GetLobbyStorage(packet.lobby);
+            if (storage == null) { return; }
+
+            foreach (NetworkPlayer networkPlayer in storage.networkPlayerInstances)
+            {
+                if (networkPlayer.uuid != packet.player.uuid)
+                {
+                    NetworkSenders.Server.SendPacketToSpecificPlayer(packet, networkPlayer, packet.lobby);
+                }
+            }
+        }
+
+
         [EventHandler(NetworkEvents.SERVER_ON_NETWORK_CONNECT)]
         public static void OnServerConnect(EventServerNetworkConnection evt)
         {
@@ -135,6 +152,12 @@ namespace Z64Online.OoTOnline
                 NetworkSenders.Server.SendPacketToSpecificPlayer(response, packet.player, packet.lobby);
             }
             storage.worlds[packet.player.data.world] = world;
+        }
+
+        [ServerNetworkHandler (typeof(Z64O_ClientSceneContextUpdate))]
+        public static void OnSceneContextSync_Server(Z64O_ClientSceneContextUpdate packet)
+        {
+            NetworkSenders.Server.SendPacket((packet), packet.lobby);
         }
 
         public static OoTOnlineStorage GetLobbyStorage(string lobby)

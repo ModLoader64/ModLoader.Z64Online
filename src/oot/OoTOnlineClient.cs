@@ -1,5 +1,6 @@
 ﻿using OoT.API;
 using OoT;
+using Buffer = NodeBuffer.Buffer;
 
 namespace Z64Online.OoTOnline
 {
@@ -57,6 +58,54 @@ namespace Z64Online.OoTOnline
 
         }
 
+        public static void AutosaveSceneData()
+        {
+            if (!Core.helper.isLinkEnteringLoadingZone() && Core.global.scene_framecount > 20 && clientStorage.first_time_sync)
+            {
+
+                Buffer save = new Buffer(0x1C);
+                Buffer saveScene = Core.save.GetSceneFlagsFromIndexRaw(Core.global.sceneID);
+
+                u32 chests = Core.global.liveChests;
+                u32 switches = Core.global.liveSwitch;
+                u32 clear = Core.global.liveClear;
+                u32 collect = Core.global.liveCollect;
+                u32 temp = Core.global.liveTemp;
+                u32 rooms = saveScene.ReadU32(0x14);
+                u32 floors = saveScene.ReadU32(0x18);
+
+                save.WriteU32(0x0, chests);
+                save.WriteU32(0x4, switches);
+                save.WriteU32(0x8, clear);
+                save.WriteU32(0xC, collect);
+                save.WriteU32(0x10, temp);
+                save.WriteU32(0x14, rooms);
+                save.WriteU32(0x18, floors);
+
+                string save_hash_2 = ModLoader.API.Utils.GetHashSHA1(save._buffer);
+                if (save_hash_2 != clientStorage.autoSaveHash)
+                {
+                    Console.WriteLine("AutoSaveSceneData()");
+                    Console.WriteLine($"save chest: {saveScene.ReadU32(0x0).ToString("X")}, save swch: {saveScene.ReadU32(0x4).ToString("X")}, save clear: {saveScene.ReadU32(0x8).ToString("X")}, save collect: {saveScene.ReadU32(0xC).ToString("X")}, save temp: {saveScene.ReadU32(0x10).ToString("X")}");
+                    Console.WriteLine($"live chest: {save.ReadU32(0x0).ToString("X")}, live swch: {save.ReadU32(0x4).ToString("X")}, live clear: {save.ReadU32(0x8).ToString("X")}, live collect: {save.ReadU32(0xC).ToString("X")}, live temp: {save.ReadU32(0x10).ToString("X")}");
+                    for (int i = 0; i < saveScene.Size; i++)
+                    {
+                        u8 sFlag = saveScene.ReadU8(i);
+                        u8 iFlag = save.ReadU8(i);
+                        saveScene.WriteU8(i, sFlag |= iFlag);
+                    }
+                    clientStorage.autoSaveHash = save_hash_2;
+                }
+                else
+                {
+                    return;
+                }
+                Core.save.SetSceneFlagsSetIndexRaw(Core.global.sceneID, saveScene);
+                NetworkSenders.Client.SendPacket(new Z64O_ClientSceneContextUpdate(chests, switches, collect, clear, temp, Core.global.sceneID, clientStorage.world, NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
+
+            }
+        }
+
         //------------------------------
         // Lobby Setup
         //------------------------------
@@ -91,7 +140,7 @@ namespace Z64Online.OoTOnline
                 Console.WriteLine("Syncing save with server.");
                 clientStorage.saveManager.ForceOverrideSave(packet.save);
                 clientStorage.saveManager.CreateSave();
-                
+
                 clientStorage.lastPushHash = clientStorage.saveManager.hash;
             }
             else
@@ -135,11 +184,52 @@ namespace Z64Online.OoTOnline
             clientStorage.saveManager.Apply(packet.save);
             // Update hash.
             clientStorage.saveManager.CreateSave();
-            
+
             clientStorage.lastPushHash = clientStorage.saveManager.hash;
 
         }
 
+        [ClientNetworkHandler(typeof(Z64O_ClientSceneContextUpdate))]
+        public static void OnSceneContextSync_Client(Z64O_ClientSceneContextUpdate packet)
+        {
+            if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid() || Core.helper.isLinkEnteringLoadingZone()) { return; }
+            if (Core.global.sceneID != packet.scene) { return; }
+            if (packet.world != clientStorage.world) return;
+            if (packet.player == NetworkClientData.me) { return; }
+            Console.WriteLine("OnSceneContextSync_Client");
+
+            u32 chests = Core.global.liveChests;
+            if((chests |= packet.chests) != 0)
+            {
+                Core.global.liveChests = chests;
+            }
+            u32 switches = Core.global.liveSwitch;
+            if ((switches |= packet.switches) != 0)
+            {
+                Core.global.liveSwitch = chests;
+            }
+            u32 collect = Core.global.liveCollect;
+            if ((collect |= packet.collect) != 0)
+            {
+                Core.global.liveCollect = collect;
+            }
+            u32 clear = Core.global.liveClear;
+            if ((clear |= packet.clear) != 0)
+            {
+                Core.global.liveClear = clear;
+            }
+            u32 temp = Core.global.liveTemp;
+            if ((temp |= packet.temp) != 0)
+            {
+                Core.global.liveTemp = temp;
+            }
+
+            // Update hash.
+            clientStorage.saveManager.CreateSave();
+
+            clientStorage.lastPushHash = clientStorage.saveManager.hash;
+
+        }
 
         //------------------------------
         // Scene Handling
@@ -204,7 +294,8 @@ namespace Z64Online.OoTOnline
                 Console.WriteLine($"OoT Randomizer detected. Version: {Convert.ToHexString(ver)}");
                 RomFlags.isRando = true;
                 OoTOnline.rando = new OoTR(new OoTR_BadSyncData());
-            } else
+            }
+            else
             {
                 RomFlags.isVanilla = true;
                 Console.WriteLine($"Vanilla rom detected.");
@@ -225,8 +316,11 @@ namespace Z64Online.OoTOnline
                 if (!Core.helper.isPaused())
                 {
                     if (!clientStorage.first_time_sync) { return; }
+
+                    AutosaveSceneData();
+
                     syncTimer++;
-                    if(syncTimer % 20 == 0)
+                    if (syncTimer % 20 == 0)
                     {
                         inventoryUpdateTick();
                     }
