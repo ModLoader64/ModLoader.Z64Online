@@ -21,7 +21,6 @@ namespace Z64Online.OoTOnline
             InventoryItem.FAIRY_SLINGSHOT,
             InventoryItem.FAIRY_OCARINA,
             InventoryItem.BOMBCHUS,
-            InventoryItem.BOMBCHUS,
             InventoryItem.HOOKSHOT,
             InventoryItem.ICE_ARROWS,
             InventoryItem.FARORES_WIND,
@@ -58,7 +57,7 @@ namespace Z64Online.OoTOnline
         [OnInit]
         public static void OnInit(EventPluginsLoaded evt)
         {
-            Console.WriteLine("OoTO ImGui: Init");
+            Console.WriteLine("OoTO ImGui");
         }
 
         [OnFrame]
@@ -159,7 +158,7 @@ namespace Z64Online.OoTOnline
 
                     if (ImGui.BeginMenu("Inventory"))
                     {
-                        for (int i = 0; i < 24; i++)
+                        for (int i = 0; i < Core.save.inventory.InventoryItems.Size; i++)
                         {
                             string s = ((InventorySlot)i).ToString();
                             string v = Core.save.inventory.InventoryItems[(InventorySlot)i].ToString("X");

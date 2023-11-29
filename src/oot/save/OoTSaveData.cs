@@ -9,6 +9,10 @@ namespace Z64Online.OoTOnline
     public class OoTOSaveData
     {
         public string hash = "";
+
+        private List<InventoryItem> USELESS_MASK = new List<InventoryItem> { InventoryItem.GERUDO_MASK, InventoryItem.ZORA_MASK, InventoryItem.GORON_MASK };
+        private List<InventoryItem> ALL_MASKS = new List<InventoryItem> { InventoryItem.KEATON_MASK, InventoryItem.SKULL_MASK, InventoryItem.SPOOKY_MASK, InventoryItem.BUNNY_HOOD, InventoryItem.MASK_OF_TRUTH, InventoryItem.GERUDO_MASK, InventoryItem.ZORA_MASK, InventoryItem.GORON_MASK };
+
         public OoTOSyncSave CreateSave()
         {
             OoTOSyncSave syncSave = new OoTOSyncSave();
@@ -19,7 +23,7 @@ namespace Z64Online.OoTOnline
 
         public void Apply(OoTOSyncSave incoming)
         {
-            Merge(incoming);
+            ForceOverrideSave(incoming);
         }
 
         public void Merge(OoTOSyncSave incoming, OoTOSyncSave save = null)
@@ -37,43 +41,66 @@ namespace Z64Online.OoTOnline
 
         public void MergeSave(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save)
         {
-            MergeItems(incoming.items, save.items);
+            MergeItems(incoming, save);
             MergeEquipment(incoming.equipment, save.equipment);
             MergeQuestStatus(incoming.questStatus, save.questStatus);
             MergeDungeonData(incoming.dungeon, save.dungeon);
             MergeFlags(incoming.flags, save.flags);
         }
 
-        public void MergeItems(InventoryItem[] incoming, InventoryItem[] save)
+        public void MergeItems(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save)
         {
             // TODO: Individual logic for some items & potential downgrading 
             for (int i = 0; i < (int)InventorySlot.COUNT; i++)
             {
-                if (save[i] != incoming[i])
+                // Do not downgrade any items to nothing
+                if (incoming.items[i] != InventoryItem.NONE)
                 {
-                    // Do not downgrade longshot w/ hookshot
-                    if (i == (int)InventorySlot.HOOKSHOT)
+                    if (save.items[i] != incoming.items[i])
                     {
-                        if (incoming[i] == InventoryItem.HOOKSHOT || incoming[i] == InventoryItem.LONGSHOT)
+                        // Do not downgrade longshot w/ hookshot
+                        if (i == (int)InventorySlot.HOOKSHOT)
                         {
-                            if (save[i] != InventoryItem.LONGSHOT)
+                            if (incoming.items[i] == InventoryItem.HOOKSHOT || incoming.items[i] == InventoryItem.LONGSHOT)
                             {
-                                save[i] = incoming[i];
+                                if (save.items[i] != InventoryItem.LONGSHOT)
+                                {
+                                    save.items[i] = incoming.items[i];
+                                }
                             }
                         }
+                        // TODO: Make this less prone to overwriting
+                        else if (i == (int)InventorySlot.ADULT_TRADE_ITEM)
+                        {
+                            if (incoming.items[i] != InventoryItem.SOLD_OUT)
+                            {
+                                if (save.items[i] == InventoryItem.NONE)
+                                {
+                                    save.items[i] = incoming.items[i];
+                                }
+                                else if (incoming.items[i] > save.items[i])
+                                {
+                                    save.items[i] = incoming.items[i];
+                                }
+                            }
+                        }
+                        else if (i == (int)InventorySlot.CHILD_TRADE_ITEM)
+                        {
+                            if (incoming.items[i] != InventoryItem.SOLD_OUT)
+                            {
+                                if (incoming.items[i] > save.items[i])
+                                {
+                                    save.items[i] = incoming.items[i];
+                                }
+                            }
+                        }
+                        else
+                        {
+                            save.items[i] = incoming.items[i];
+                        }
                     }
-
-                    // Do not downgrade any items to nothing
-                    if (incoming[i] != InventoryItem.NONE)
-                    {
-                        save[i] = incoming[i];
-                    }
-                    else
-                    {
-
-                    }
-
                 }
+                
             }
         }
 
@@ -291,7 +318,7 @@ namespace Z64Online.OoTOnline
             // Write to local OoTO Items if supplied, otherwise write to save file directly
             if (save != null)
             {
-                OverrideItems(incoming.data.items, save.data.items);
+                OverrideItems(incoming.data, save.data);
                 OverrideEquipment(incoming.data.equipment, save.data.equipment);
                 OverrideQuestStatus(incoming.data.questStatus, save.data.questStatus);
                 OverrideDungeonData(incoming.data.dungeon, save.data.dungeon);
@@ -299,7 +326,7 @@ namespace Z64Online.OoTOnline
             }
             else
             {
-                OverrideItems(incoming.data.items);
+                OverrideItems(incoming.data);
                 OverrideEquipment(incoming.data.equipment);
                 OverrideQuestStatus(incoming.data.questStatus);
                 OverrideDungeonData(incoming.data.dungeon);
@@ -307,22 +334,21 @@ namespace Z64Online.OoTOnline
             }
         }
 
-        public void OverrideItems(InventoryItem[] incoming, InventoryItem[] save = null)
+        public void OverrideItems(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save = null)
         {
-
             // Write to local OoTO Items if supplied, otherwise write to save file directly
             if (save != null)
             {
                 for (int i = 0; i < (int)InventorySlot.COUNT; i++)
                 {
-                    save[i] = incoming[i];
+                    save.items[i] = incoming.items[i];
                 }
             }
             else
             {
                 for (int i = 0; i < (int)InventorySlot.COUNT; i++)
                 {
-                    Core.save.inventory.InventoryItems[i] = incoming[i];
+                    Core.save.inventory.InventoryItems[i] = incoming.items[i];
                 }
             }
         }
