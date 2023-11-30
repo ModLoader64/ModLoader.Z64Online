@@ -78,7 +78,7 @@ namespace Z64Online.OoTOnline
                                 {
                                     save.items[i] = incoming.items[i];
                                 }
-                                else if (incoming.items[i] != save.items[i])
+                                else if (incoming.items[i] > save.items[i])
                                 {
                                     save.items[i] = incoming.items[i];
                                 }
@@ -91,7 +91,8 @@ namespace Z64Online.OoTOnline
                                 if (save.items[i] == InventoryItem.NONE)
                                 {
                                     save.items[i] = incoming.items[i];
-                                } else if (incoming.items[i] != save.items[i])
+                                } 
+                                else if (incoming.items[i] > save.items[i])
                                 {
                                     save.items[i] = incoming.items[i];
                                 }
