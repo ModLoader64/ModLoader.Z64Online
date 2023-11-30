@@ -158,6 +158,14 @@ namespace Z64Online.OoTOnline
         public static void OnSaveLoad(EventSaveLoaded e)
         {
             Console.WriteLine("OnSaveLoad");
+
+            if (!RomFlags.isRando) return;
+            if (OoTR_PotsanityHelper.HasPotsanity())
+            {
+                RomFlags.OotR_HasPotsanity = true;
+                RomFlags.OotR_PotsanityFlagSize = OoTR_PotsanityHelper.GetFlagArraySize();
+            }
+
             NetworkSenders.Client.SendPacket(new Z64O_DownloadRequestPacket(new OoTOSaveData().CreateSave(), NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
 
         }
@@ -293,7 +301,7 @@ namespace Z64Online.OoTOnline
                 byte[] ver = rom[(start + prog - 1)..(start + prog - 1 + 0x4)];
                 Console.WriteLine($"OoT Randomizer detected. Version: {Convert.ToHexString(ver)}");
                 RomFlags.isRando = true;
-                OoTOnline.rando = new OoTR(new OoTR_BadSyncData());
+                OoTOnline.rando = new OoTR(new OoTR_BadSyncData(), new OoTR_PotsanityHelper(), new OoTR_TriforceHuntHelper());
             }
             else
             {

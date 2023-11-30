@@ -46,6 +46,7 @@ namespace Z64Online.OoTOnline
             MergeQuestStatus(incoming.questStatus, save.questStatus);
             MergeDungeonData(incoming.dungeon, save.dungeon);
             MergeFlags(incoming.flags, save.flags);
+            MergeRando(incoming, save);
         }
 
         public void MergeItems(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save)
@@ -332,6 +333,25 @@ namespace Z64Online.OoTOnline
             }
         }
 
+        public void MergeRando(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save)
+        {
+            if (!save.isOoTR) return;
+            if (save.isPotsanity)
+            {
+                for (int i = 0; i < incoming.rando.collectible_override_flags.Size; i++)
+                {
+                    u8 s_flg = save.rando.collectible_override_flags.ReadU8(i);
+                    u8 i_flg = incoming.rando.collectible_override_flags.ReadU8(i);
+                    save.rando.collectible_override_flags.WriteU8(i, s_flg |= i_flg);
+                }
+                OoTR_PotsanityHelper.SetFlagsBuffer(save.rando.collectible_override_flags);
+            }
+            if(incoming.rando.triforcePieces > save.rando.triforcePieces)
+            {
+                save.rando.triforcePieces = incoming.rando.triforcePieces;
+            }
+        }
+
         public void ForceOverrideSave(OoTOSyncSave incoming, OoTOSyncSave save = null)
         {
             // Write to local OoTO Items if supplied, otherwise write to save file directly
@@ -342,6 +362,7 @@ namespace Z64Online.OoTOnline
                 OverrideQuestStatus(incoming.data.questStatus, save.data.questStatus);
                 OverrideDungeonData(incoming.data.dungeon, save.data.dungeon);
                 OverrideFlags(incoming.data.flags, save.data.flags);
+                OverrideRando(incoming.data, save.data);
             }
             else
             {
@@ -350,6 +371,7 @@ namespace Z64Online.OoTOnline
                 OverrideQuestStatus(incoming.data.questStatus);
                 OverrideDungeonData(incoming.data.dungeon);
                 OverrideFlags(incoming.data.flags);
+                OverrideRando(incoming.data);
             }
         }
 
@@ -614,6 +636,28 @@ namespace Z64Online.OoTOnline
             }
         }
 
+        public void OverrideRando(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save = null)
+        {
+            if (!incoming.isOoTR) return;
+            if (save != null) 
+            {
+                if (save.isPotsanity)
+                {
+                    save.rando.collectible_override_flags = incoming.rando.collectible_override_flags;
+                }
+                save.rando.triforcePieces = incoming.rando.triforcePieces;
+            } 
+            else
+            {
+                if (incoming.isPotsanity)
+                {
+                    OoTR_PotsanityHelper.SetFlagsBuffer(incoming.rando.collectible_override_flags);
+                }
+                OoTR_TriforceHuntHelper.SetTriforcePieces(incoming.rando.triforcePieces);
+            }
+            
+        }
+
         public OoTOnlineSaveSync CreateInventory(WrapperSaveContext save)
         {
             OoTOnlineSaveSync sync = new OoTOnlineSaveSync();
@@ -740,6 +784,16 @@ namespace Z64Online.OoTOnline
             sync.questStatus.gsTokens = save.inventory.gsTokens;
             sync.questStatus.hasDoubleDefense = save.isDoubleDefenseAcquired;
 
+            if (RomFlags.isRando)
+            {
+                sync.isOoTR = true;
+                if (RomFlags.OotR_HasPotsanity)
+                {
+                    sync.isPotsanity = true;
+                    sync.rando.collectible_override_flags = OoTR_PotsanityHelper.GetFlagBuffer();
+                }
+                sync.rando.triforcePieces = OoTR_TriforceHuntHelper.GetTriforcePieces();
+            }
             return sync;
         }
 

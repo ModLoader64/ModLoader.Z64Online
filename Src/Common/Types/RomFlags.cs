@@ -8,6 +8,6 @@
         public static bool isVanilla = false;
         public static bool OotR_HasPotsanity = false;
         public static int OotR_PotsanityFlagSize = -1;
-
+        public static bool OotR_HasTriforceHunt = false;
     }
 }

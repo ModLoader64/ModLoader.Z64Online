@@ -30,8 +30,6 @@ namespace Z64Online.OoTOnline
     }
     public class OoTOSyncSave
     {
-        public bool isOoTR = false;
-        public bool isVanilla = false;
         public OoTOnlineSaveSync? data = new OoTOnlineSaveSync();
     }
 
@@ -42,6 +40,11 @@ namespace Z64Online.OoTOnline
         public OoTOnlineQuestStatusSync questStatus = new OoTOnlineQuestStatusSync();
         public OoTOnlineDungeonSync dungeon = new OoTOnlineDungeonSync();
         public OoTOnlineFlagSync flags = new OoTOnlineFlagSync();
+        public OoTOnlineRandoSync rando = new OoTOnlineRandoSync();
+
+        public bool isOoTR = false;
+        public bool isPotsanity = false;
+        public bool isVanilla = false;
     }
 
     public class OoTOnlineEquipmentSync
@@ -151,6 +154,12 @@ namespace Z64Online.OoTOnline
             return true;
         }
 
+    }
+
+    public class OoTOnlineRandoSync
+    {
+        public Buffer collectible_override_flags = new Buffer(OoTR_PotsanityHelper.GetFlagArraySize());
+        public u32 triforcePieces = 0;
     }
 
     public class OOTKeyRingServer : IKeyRing
