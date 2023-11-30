@@ -19,6 +19,7 @@ namespace Z64Online.OoTOnline
             badSyncData.BlacklistU32(0x34);
             badSyncData.BlacklistU32(0x35);
             badSyncData.BlacklistU32(0x39);
+            badSyncData.BlacklistU32(0x49);
             //badSyncData.BlacklistU32(0xFF);
 
         }

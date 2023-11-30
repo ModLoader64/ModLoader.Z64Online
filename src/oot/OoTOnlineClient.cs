@@ -195,7 +195,7 @@ namespace Z64Online.OoTOnline
             if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid() || Core.helper.isLinkEnteringLoadingZone()) { return; }
             if (Core.global.sceneID != packet.scene) { return; }
             if (packet.world != clientStorage.world) return;
-            if (packet.player == NetworkClientData.me) { return; }
+            if (packet.player.uuid == NetworkClientData.me.uuid) { return; }
             Console.WriteLine("OnSceneContextSync_Client");
 
             u32 chests = Core.global.liveChests;
@@ -206,7 +206,7 @@ namespace Z64Online.OoTOnline
             u32 switches = Core.global.liveSwitch;
             if ((switches |= packet.switches) != 0)
             {
-                Core.global.liveSwitch = chests;
+                Core.global.liveSwitch = switches;
             }
             u32 collect = Core.global.liveCollect;
             if ((collect |= packet.collect) != 0)

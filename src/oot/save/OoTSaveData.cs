@@ -78,7 +78,7 @@ namespace Z64Online.OoTOnline
                                 {
                                     save.items[i] = incoming.items[i];
                                 }
-                                else if (incoming.items[i] > save.items[i])
+                                else if (incoming.items[i] != save.items[i])
                                 {
                                     save.items[i] = incoming.items[i];
                                 }
@@ -88,7 +88,10 @@ namespace Z64Online.OoTOnline
                         {
                             if (incoming.items[i] != InventoryItem.SOLD_OUT)
                             {
-                                if (incoming.items[i] > save.items[i])
+                                if (save.items[i] == InventoryItem.NONE)
+                                {
+                                    save.items[i] = incoming.items[i];
+                                } else if (incoming.items[i] != save.items[i])
                                 {
                                     save.items[i] = incoming.items[i];
                                 }
@@ -254,13 +257,28 @@ namespace Z64Online.OoTOnline
                 if (!save.sceneFlags[i].Equals(incoming.sceneFlags[i]))
                 {
                     Console.WriteLine($"Scene[{i}] Flag Update: {JsonConvert.SerializeObject(save.sceneFlags[i])} -> {JsonConvert.SerializeObject(incoming.sceneFlags[i])}");
+
                     save.sceneFlags[i].chest |= incoming.sceneFlags[i].chest;
-                    save.sceneFlags[i].swch |= incoming.sceneFlags[i].swch;
                     save.sceneFlags[i].clear |= incoming.sceneFlags[i].clear;
                     save.sceneFlags[i].collect |= incoming.sceneFlags[i].collect;
                     save.sceneFlags[i].unk |= incoming.sceneFlags[i].unk;
                     save.sceneFlags[i].rooms |= incoming.sceneFlags[i].rooms;
                     save.sceneFlags[i].floors |= incoming.sceneFlags[i].floors;
+
+                    // Switch Flag specific cases
+                    switch (i)
+                    {
+                        case 3: // Forest Temple
+                            save.sceneFlags[i].swch &= 0xF7; // Poe Sisters Cutscene & Elevator Off Switch.
+                            break;
+                        case 5:  // Water Temple
+                            save.sceneFlags[i].swch = save.sceneFlags[i].swch; // Water Level, don't bother syncing for now.
+                            break;
+                        default:
+                            save.sceneFlags[i].swch |= incoming.sceneFlags[i].swch;
+                            break;
+                    }
+
                 }
             }
 
