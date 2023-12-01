@@ -92,7 +92,7 @@ namespace Z64Online.OoTOnline
                                 if (save.items[i] == InventoryItem.NONE)
                                 {
                                     save.items[i] = incoming.items[i];
-                                } 
+                                }
                                 else if (incoming.items[i] > save.items[i])
                                 {
                                     save.items[i] = incoming.items[i];
@@ -105,7 +105,7 @@ namespace Z64Online.OoTOnline
                         }
                     }
                 }
-                
+
             }
         }
 
@@ -346,7 +346,7 @@ namespace Z64Online.OoTOnline
                 }
                 OoTR_PotsanityHelper.SetFlagsBuffer(save.rando.collectible_override_flags);
             }
-            if(incoming.rando.triforcePieces > save.rando.triforcePieces)
+            if (incoming.rando.triforcePieces > save.rando.triforcePieces)
             {
                 save.rando.triforcePieces = incoming.rando.triforcePieces;
             }
@@ -389,7 +389,16 @@ namespace Z64Online.OoTOnline
             {
                 for (int i = 0; i < (int)InventorySlot.COUNT; i++)
                 {
+                    // Give Bombchu amount when recieving them for the first time.
+                    if (i == (int)InventorySlot.BOMBCHUS) 
+                    {
+                        if (Core.save.inventory.InventoryItems[i] != incoming.items[i])
+                        {
+                            OoTOnlineClient.AmmoRefill((InventorySlot)i, OoT.API.Enums.Capacity.AmmoUpgrade.Basic);
+                        }
+                    }
                     Core.save.inventory.InventoryItems[i] = incoming.items[i];
+                    
                 }
             }
         }
@@ -438,14 +447,36 @@ namespace Z64Online.OoTOnline
                 Core.save.inventory.equipment.ironBoots = incoming.ironBoots;
                 Core.save.inventory.equipment.hoverBoots = incoming.hoverBoots;
 
-                Core.save.inventory.upgrades.bombBag = incoming.bombBag;
-                Core.save.inventory.upgrades.bulletBag = incoming.bulletBag;
+                if (Core.save.inventory.upgrades.bombBag < incoming.bombBag)
+                {
+                    Core.save.inventory.upgrades.bombBag = incoming.bombBag;
+                    OoTOnlineClient.AmmoRefill(InventorySlot.BOMBS, incoming.bombBag);
+                }
+                if (Core.save.inventory.upgrades.bulletBag < incoming.bulletBag)
+                {
+                    Core.save.inventory.upgrades.bulletBag = incoming.bulletBag;
+                    OoTOnlineClient.AmmoRefill(InventorySlot.FAIRY_SLINGSHOT, incoming.bulletBag);
+                }
+                if (Core.save.inventory.upgrades.quiver < incoming.quiver)
+                {
+                    Core.save.inventory.upgrades.quiver = incoming.quiver;
+                    OoTOnlineClient.AmmoRefill(InventorySlot.FAIRY_BOW, incoming.quiver);
+                }
+                if (Core.save.inventory.upgrades.dekuNutCapacity < incoming.dekuNutCapacity)
+                {
+                    Core.save.inventory.upgrades.dekuNutCapacity = incoming.dekuNutCapacity;
+                    OoTOnlineClient.AmmoRefill(InventorySlot.DEKU_NUTS, incoming.dekuNutCapacity);
+                }
+                if (Core.save.inventory.upgrades.dekuStickCapacity < incoming.dekuStickCapacity)
+                {
+                    Core.save.inventory.upgrades.dekuStickCapacity = incoming.dekuStickCapacity;
+                    OoTOnlineClient.AmmoRefill(InventorySlot.DEKU_STICKS, incoming.dekuStickCapacity);
+                }
+
                 Core.save.inventory.upgrades.wallet = incoming.wallet;
-                Core.save.inventory.upgrades.quiver = incoming.quiver;
-                Core.save.inventory.upgrades.dekuNutCapacity = incoming.dekuNutCapacity;
-                Core.save.inventory.upgrades.dekuStickCapacity = incoming.dekuStickCapacity;
                 Core.save.inventory.upgrades.strength = incoming.strength;
                 Core.save.inventory.upgrades.scale = incoming.scale;
+
             }
         }
 
@@ -515,9 +546,17 @@ namespace Z64Online.OoTOnline
                 Core.save.inventory.questStatus.gerudoCard = incoming.gerudoCard;
                 Core.save.inventory.questStatus.hasGoldSkull = incoming.hasGoldSkull;
 
-                Core.save.inventory.questStatus.heartPieces = incoming.heartPieces;
+                if(Core.save.inventory.questStatus.heartPieces != incoming.heartPieces)
+                {
+                    Core.save.inventory.questStatus.heartPieces = incoming.heartPieces;
+                    OoTOnlineClient.HealPlayer();
+                }
+                if (Core.save.healthCapacity != incoming.healthCapacity)
+                {
+                    Core.save.healthCapacity = incoming.healthCapacity;
+                    OoTOnlineClient.HealPlayer();
+                }
                 Core.save.magicLevel = incoming.magicLevel;
-                Core.save.healthCapacity = incoming.healthCapacity;
                 Core.save.inventory.questStatus.gsTokens = incoming.gsTokens;
                 Core.save.isDoubleDefenseAcquired = incoming.hasDoubleDefense;
                 Core.save.inventory.gsTokens = incoming.gsTokens;
@@ -639,14 +678,14 @@ namespace Z64Online.OoTOnline
         public void OverrideRando(OoTOnlineSaveSync incoming, OoTOnlineSaveSync save = null)
         {
             if (!incoming.isOoTR) return;
-            if (save != null) 
+            if (save != null)
             {
                 if (save.isPotsanity)
                 {
                     save.rando.collectible_override_flags = incoming.rando.collectible_override_flags;
                 }
                 save.rando.triforcePieces = incoming.rando.triforcePieces;
-            } 
+            }
             else
             {
                 if (incoming.isPotsanity)
@@ -655,7 +694,7 @@ namespace Z64Online.OoTOnline
                 }
                 OoTR_TriforceHuntHelper.SetTriforcePieces(incoming.rando.triforcePieces);
             }
-            
+
         }
 
         public OoTOnlineSaveSync CreateInventory(WrapperSaveContext save)

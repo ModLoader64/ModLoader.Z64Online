@@ -1,6 +1,7 @@
 ﻿using OoT.API;
 using OoT;
 using Buffer = NodeBuffer.Buffer;
+using OoT.API.Enums;
 
 namespace Z64Online.OoTOnline
 {
@@ -106,6 +107,47 @@ namespace Z64Online.OoTOnline
             }
         }
 
+        public static void HealPlayer()
+        {
+            if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid()) { return; }
+            Memory.RAM.WriteU16((uint)OoTVersionPointers.SaveContext + 0x1424, 0x65);
+        }
+
+        public static void AmmoRefill(InventorySlot slot, Capacity.AmmoUpgrade upgrade)
+        {
+
+            switch (upgrade)
+            {
+                case Capacity.AmmoUpgrade.None:
+                    break;
+                case Capacity.AmmoUpgrade.Basic:
+                    if (slot == InventorySlot.DEKU_STICKS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 10); }
+                    if (slot == InventorySlot.DEKU_NUTS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 20); }
+                    if (slot == InventorySlot.BOMBS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 20); }
+                    if (slot == InventorySlot.FAIRY_SLINGSHOT) { Core.save.inventory.SetAmmoInSlot((u8)slot, 30); }
+                    if (slot == InventorySlot.FAIRY_BOW) { Core.save.inventory.SetAmmoInSlot((u8)slot, 30); }
+                    if (slot == InventorySlot.BOMBCHUS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 5); }
+                    break;
+                case Capacity.AmmoUpgrade.Upgrade:
+                    if (slot == InventorySlot.DEKU_STICKS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 20); }
+                    if (slot == InventorySlot.DEKU_NUTS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 30); }
+                    if (slot == InventorySlot.BOMBS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 30); }
+                    if (slot == InventorySlot.FAIRY_SLINGSHOT) { Core.save.inventory.SetAmmoInSlot((u8)slot, 40); }
+                    if (slot == InventorySlot.FAIRY_BOW) { Core.save.inventory.SetAmmoInSlot((u8)slot, 40); }
+                    if (slot == InventorySlot.BOMBCHUS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 10); }
+                    break;
+                case Capacity.AmmoUpgrade.Max:
+                    if (slot == InventorySlot.DEKU_STICKS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 30); }
+                    if (slot == InventorySlot.DEKU_NUTS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 40); }
+                    if (slot == InventorySlot.BOMBS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 40); }
+                    if (slot == InventorySlot.FAIRY_SLINGSHOT) { Core.save.inventory.SetAmmoInSlot((u8)slot, 50); }
+                    if (slot == InventorySlot.FAIRY_BOW) { Core.save.inventory.SetAmmoInSlot((u8)slot, 50); }
+                    if (slot == InventorySlot.BOMBCHUS) { Core.save.inventory.SetAmmoInSlot((u8)slot, 20); }
+                    break;
+            }
+
+        }
+
         //------------------------------
         // Lobby Setup
         //------------------------------
@@ -209,7 +251,7 @@ namespace Z64Online.OoTOnline
             Console.WriteLine("OnSceneContextSync_Client");
 
             u32 chests = Core.global.liveChests;
-            if((chests |= packet.chests) != 0)
+            if ((chests |= packet.chests) != 0)
             {
                 Core.global.liveChests = chests;
             }
