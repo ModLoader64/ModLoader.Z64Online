@@ -159,11 +159,13 @@ namespace Z64Online.OoTOnline
         {
             Console.WriteLine("OnSaveLoad");
 
-            if (!RomFlags.isRando) return;
-            if (OoTR_PotsanityHelper.HasPotsanity())
+            if (RomFlags.isRando)
             {
-                RomFlags.OotR_HasPotsanity = true;
-                RomFlags.OotR_PotsanityFlagSize = OoTR_PotsanityHelper.GetFlagArraySize();
+                if (OoTR_PotsanityHelper.HasPotsanity())
+                {
+                    RomFlags.OotR_HasPotsanity = true;
+                    RomFlags.OotR_PotsanityFlagSize = OoTR_PotsanityHelper.GetFlagArraySize();
+                }
             }
 
             NetworkSenders.Client.SendPacket(new Z64O_DownloadRequestPacket(new OoTOSaveData().CreateSave(), NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
