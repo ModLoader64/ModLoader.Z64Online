@@ -5,20 +5,29 @@ using OoT.API.Enums;
 
 namespace Z64Online.OoTOnline
 {
+
     [BootstrapFilter]
     public class OoTOnlineClient : IBootstrapFilter
     {
-
         public static OoTOnlineStorageClient clientStorage = new OoTOnlineStorageClient(new OoTOSaveData());
 
         static int syncTimer = 0;
         static int syncTimerMax = 20 * 20;
 
+        /// <summary>
+        /// Boolean that determines whether the ModLoader Event loop is active for this class.
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns>Initializes if true, otherwise the class isn't hooked up.</returns>
         public static bool DoesLoad(byte[] e)
         {
             return Z64Online.currentGame.OoT || Z64Online.currentGame.OoTDBG;
         }
 
+        /// <summary>
+        /// Initializes any data needed the moment the plugin is loaded.
+        /// </summary>
+        /// <param name="evt"></param>
         [OnInit]
         public static void OnInit(EventPluginsLoaded evt)
         {
@@ -28,12 +37,20 @@ namespace Z64Online.OoTOnline
 
         }
 
+        /// <summary>
+        /// Ran the moment the emulator is constructed. 
+        /// </summary>
+        /// <param name="e"></param>
         [OnEmulatorStart]
         public static void OnEmulatorStart(EventEmulatorStart e)
         {
             clientStorage.saveManager = new OoTOSaveData();
         }
 
+        /// <summary>
+        /// Checks the in-game inventory with Z64Online's storage copy. 
+        /// If there are any updates, it applies it to the storage copy and forwards it to the server.
+        /// </summary>
         public static void UpdateInventory()
         {
             if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid() || Core.helper.isPaused() || !clientStorage.first_time_sync) return;
@@ -59,6 +76,9 @@ namespace Z64Online.OoTOnline
 
         }
 
+        /// <summary>
+        /// Stores the current scene's data and sends it to other players in the same scene if updated.
+        /// </summary>
         public static void AutosaveSceneData()
         {
             if (!Core.helper.isLinkEnteringLoadingZone() && Core.global.scene_framecount > 20 && clientStorage.first_time_sync)
@@ -107,12 +127,21 @@ namespace Z64Online.OoTOnline
             }
         }
 
+        /// <summary>
+        /// Helper for healing the player back to full health. 
+        /// TODO: Put these helpers in the core later?
+        /// </summary>
         public static void HealPlayer()
         {
             if (Core.helper.isTitleScreen() || !Core.helper.isSceneNumberValid()) { return; }
             Memory.RAM.WriteU16((uint)OoTVersionPointers.SaveContext + 0x1424, 0x65);
         }
 
+        /// <summary>
+        /// Helper for refilling the player's item ammo. 
+        /// </summary>
+        /// <param name="slot">Inventory slot to refill</param>
+        /// <param name="upgrade">The ammo capacity limit</param>
         public static void AmmoRefill(InventorySlot slot, Capacity.AmmoUpgrade upgrade)
         {
 
@@ -152,6 +181,11 @@ namespace Z64Online.OoTOnline
         // Lobby Setup
         //------------------------------
 
+        /// <summary>
+        /// Ran when the client connects to the server. 
+        /// Sets whether the first sync has occured to false.
+        /// </summary>
+        /// <param name="e"></param>
         [EventHandler(NetworkEvents.CLIENT_ON_NETWORK_CONNECT)]
         public static void OnConnect(EventClientNetworkConnection e)
         {
@@ -159,6 +193,11 @@ namespace Z64Online.OoTOnline
             clientStorage.first_time_sync = false;
         }
 
+        /// <summary>
+        /// Ran when the player has joined a lobby. 
+        /// Initializes the player's data to be added into the server storage later.
+        /// </summary>
+        /// <param name="e"></param>
         [EventHandler(NetworkEvents.CLIENT_ON_NETWORK_LOBBY_JOIN)]
         public static void OnLobbyJoin(EventClientNetworkLobbyJoined e)
         {
@@ -168,7 +207,13 @@ namespace Z64Online.OoTOnline
             clientStorage.first_time_sync = false;
         }
 
-
+        /// <summary>
+        /// Checks the state of the lobby.
+        /// If the lobby is brand new, the client initializes it's data with their own. 
+        /// Otherwise, it asks the server to send the current lobby data to sync before it is allowed to send any packets.
+        /// Afterwards, the client is considered finished with their first sync and can send and recieve packets freely.
+        /// </summary>
+        /// <param name="packet"></param>
         [ClientNetworkHandler(typeof(Z64O_DownloadResponsePacket))]
         public static void OnDownloadPacket_Client(Z64O_DownloadResponsePacket packet)
         {
@@ -196,6 +241,12 @@ namespace Z64Online.OoTOnline
         // Save Load Handling
         //------------------------------
 
+        /// <summary>
+        /// Ran once the save file has been loaded.
+        /// Initializes Potsanity if it is detected in the randomizer.
+        /// Sends a request to the server to download the latest save data.
+        /// </summary>
+        /// <param name="e"></param>
         [EventHandler("EventSaveLoaded")]
         public static void OnSaveLoad(EventSaveLoaded e)
         {
@@ -214,6 +265,10 @@ namespace Z64Online.OoTOnline
 
         }
 
+        /// <summary>
+        /// Resets the client so it has to redo all the first time setup.
+        /// </summary>
+        /// <param name="e"></param>
         [EventHandler("EventSoftReset")]
         public static void OnSoftReset(EventSoftReset e)
         {
@@ -225,6 +280,10 @@ namespace Z64Online.OoTOnline
         // Save Handling
         //------------------------------
 
+        /// <summary>
+        /// Recieves a save update from the server and applies it to the client's save file.
+        /// </summary>
+        /// <param name="packet"></param>
         [ClientNetworkHandler(typeof(Z64O_UpdateSaveDataPacket))]
         public static void OnSaveUpdate(Z64O_UpdateSaveDataPacket packet)
         {
@@ -241,6 +300,10 @@ namespace Z64Online.OoTOnline
 
         }
 
+        /// <summary>
+        /// Applies live scene data from the server if the client is in the intended scene. 
+        /// </summary>
+        /// <param name="packet"></param>
         [ClientNetworkHandler(typeof(Z64O_ClientSceneContextUpdate))]
         public static void OnSceneContextSync_Client(Z64O_ClientSceneContextUpdate packet)
         {
@@ -287,6 +350,10 @@ namespace Z64Online.OoTOnline
         // Scene Handling
         //------------------------------
 
+        /// <summary>
+        /// Sends the server an update telling it that has entered a new scene.
+        /// </summary>
+        /// <param name="evt"></param>
         [EventHandler("EventSceneChange")]
         public static void OnSceneChange(EventSceneChange evt)
         {
@@ -306,13 +373,20 @@ namespace Z64Online.OoTOnline
         // General Event Handling
         //------------------------------
 
+        /// <summary>
+        /// Sends the server an update telling it that it has changed ages (child <-> adult).
+        /// </summary>
+        /// <param name="evt"></param>
         [EventHandler("OnAgeChange")]
         public static void OnAgeChange(EventAgeChange evt)
         {
             NetworkSenders.Client.SendPacket(new Z64O_ScenePacket(Core.global.sceneID, evt.age, NetworkClientData.lobby, NetworkClientData.me), NetworkClientData.lobby);
         }
 
-
+        /// <summary>
+        /// Checks the ROM before the emulator is ran. 
+        /// </summary>
+        /// <param name="e"></param>
         [EventHandler("EventRomLoaded")]
         public static void OnRomLoaded(EventRomLoaded e)
         {
@@ -328,6 +402,10 @@ namespace Z64Online.OoTOnline
         // OoTRando Handling
         //------------------------------
 
+        /// <summary>
+        /// Identifies whether the ROM is an OoT Randomizer or not. 
+        /// </summary>
+        /// <param name="rom"></param>
         public static void CheckOoTR(byte[] rom)
         {
             int start = 0x20;
@@ -360,6 +438,10 @@ namespace Z64Online.OoTOnline
         // Tick Update
         //------------------------------
 
+        /// <summary>
+        /// Client's main tick loop.
+        /// </summary>
+        /// <param name="e"></param>
         [OnFrame]
         public static void OnTick(EventNewFrame e)
         {
@@ -374,17 +456,16 @@ namespace Z64Online.OoTOnline
                     syncTimer++;
                     if (syncTimer % 20 == 0)
                     {
-                        inventoryUpdateTick();
+                        UpdateInventory();
                     }
                 }
             }
         }
 
-        public static void inventoryUpdateTick()
-        {
-            UpdateInventory();
-        }
-
+        /// <summary>
+        /// Cleint's visual interupt loop.
+        /// </summary>
+        /// <param name="e"></param>
         [OnViUpdate]
         public static void OnViUpdate(EventNewVi e)
         {

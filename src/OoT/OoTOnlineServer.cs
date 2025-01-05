@@ -1,16 +1,17 @@
-﻿using NuGet.Versioning;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Z64Online.OoTOnline
 {
     public class OoTOnlineServer
     {
+        /// <summary>
+        /// List of all the lobby's data on the server.
+        /// </summary>
         public static List<OoTOnlineStorage> lobbyStorage = new List<OoTOnlineStorage>();
 
+        /// <summary>
+        /// Forwards a packet between players in the same scene.
+        /// </summary>
+        /// <param name="packet"></param>
         public static void SendPacketToPlayersInScene(dynamic packet)
         {
             if (packet == null) return;
@@ -34,6 +35,10 @@ namespace Z64Online.OoTOnline
             Console.WriteLine("OnServerConnected");
         }
 
+        /// <summary>
+        /// Adds the current lobby to the lobby storage list.
+        /// </summary>
+        /// <param name="evt"></param>
         [EventHandler(NetworkEvents.SERVER_ON_NETWORK_LOBBY_CREATED)]
         public static void OnLobbyCreated(EventServerNetworkLobbyCreated evt)
         {
@@ -46,6 +51,10 @@ namespace Z64Online.OoTOnline
             SetLobbyStorage(storage, evt.lobby);
         }
 
+        /// <summary>
+        /// Adds the new player to the lobby's list.
+        /// </summary>
+        /// <param name="evt"></param>
         [EventHandler(NetworkEvents.SERVER_ON_NETWORK_LOBBY_JOIN)]
         public static void OnPlayerJoin_Server(EventServerNetworkLobbyJoined evt)
         {
@@ -58,6 +67,10 @@ namespace Z64Online.OoTOnline
             SetLobbyStorage(storage, evt.lobby);
         }
 
+        /// <summary>
+        /// Removes the player from the lobby's list.
+        /// </summary>
+        /// <param name="evt"></param>
         [EventHandler(NetworkEvents.SERVER_ON_NETWORK_LOBBY_DISCONNECT)]
         public static void OnPlayerLeave_Server(EventServerNetworkLobbyDisconnect evt)
         {
@@ -79,6 +92,10 @@ namespace Z64Online.OoTOnline
             Console.WriteLine($"Server: Player {evt.player.nickname} disconnected.");
         }
 
+        /// <summary>
+        /// Merges the server's save data with the save data sent by the client, and forwards the result to the other players.
+        /// </summary>
+        /// <param name="packet"></param>
         [ServerNetworkHandler(typeof(Z64O_UpdateSaveDataPacket))]
         public static void OnUpdateSaveData_Server(Z64O_UpdateSaveDataPacket packet)
         {
@@ -97,6 +114,10 @@ namespace Z64Online.OoTOnline
             NetworkSenders.Server.SendPacket(new Z64O_UpdateSaveDataPacket(world.save, packet.player.data.world, packet.player, packet.lobby), packet.lobby);
         }
 
+        /// <summary>
+        /// Updates the client's current scene 
+        /// </summary>
+        /// <param name="packet"></param>
         [ServerNetworkHandler(typeof(Z64O_ScenePacket))]
         public static void OnSceneChange_Server(Z64O_ScenePacket packet)
         {
@@ -119,7 +140,10 @@ namespace Z64Online.OoTOnline
             PubEventBus.bus.PushEvent(new ServerPlayerChangedScenes(packet.player, packet.scene));
         }
 
-        // Client is logging in and wants to know how to proceed.
+        /// <summary>
+        /// Client is logging in and wants to know how to proceed.
+        /// </summary>
+        /// <param name="packet"></param>
         [ServerNetworkHandler (typeof(Z64O_DownloadRequestPacket))]
         public static void OnDownloadPacket(Z64O_DownloadRequestPacket packet)
         {
@@ -154,12 +178,21 @@ namespace Z64Online.OoTOnline
             storage.worlds[packet.player.data.world] = world;
         }
 
+        /// <summary>
+        /// Forwards the live scene data to the lobby.
+        /// </summary>
+        /// <param name="packet"></param>
         [ServerNetworkHandler (typeof(Z64O_ClientSceneContextUpdate))]
         public static void OnSceneContextSync_Server(Z64O_ClientSceneContextUpdate packet)
         {
-            NetworkSenders.Server.SendPacket((packet), packet.lobby);
+            NetworkSenders.Server.SendPacket(packet, packet.lobby);
         }
 
+        /// <summary>
+        /// Iterates through the all the lobbies on the server and returns the requested lobby.
+        /// </summary>
+        /// <param name="lobby">Name of the requested lobby.</param>
+        /// <returns>The data of the requested lobby.</returns>
         public static OoTOnlineStorage GetLobbyStorage(string lobby)
         {
             Console.WriteLine($"GetLobbyStorage: Storage[] Length {lobbyStorage.Count}");
@@ -174,6 +207,11 @@ namespace Z64Online.OoTOnline
             return null;
         }
 
+        /// <summary>
+        /// Iterates through the all the lobbies on the server and applies data to the requested lobby.
+        /// </summary>
+        /// <param name="incoming">New lobby data too apply.</param>
+        /// <param name="lobby">Name of the requested lobby.</param>
         public static void SetLobbyStorage(OoTOnlineStorage incoming, string lobby)
         {
             int index = 0;

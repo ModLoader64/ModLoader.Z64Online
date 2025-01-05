@@ -69,7 +69,7 @@ namespace Z64Online.OoTOnline
         [OnViUpdate]
         public static void OnViUpdate(EventNewVi e)
         {
-            if (ImGui.BeginMainMenuBar())
+            /*if (ImGui.BeginMainMenuBar())
             {
                 if (ImGui.BeginMenu("OoTO"))
                 {
@@ -802,7 +802,7 @@ namespace Z64Online.OoTOnline
 
                     ImGui.End();
                 }
-            }
+            }*/
 
         }
     }

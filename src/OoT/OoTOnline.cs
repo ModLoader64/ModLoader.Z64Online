@@ -11,6 +11,11 @@ public class OoTOnline : IBootstrapFilter
     public static bool isOpen = true;
     public static OoTR ?rando;
     
+    /// <summary>
+    /// Determines whether OoTO is constructed by checking the ROM's header to see if it's a version of OoT.
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
     public static bool DoesLoad(byte[] e)
     {
         romHeader = Core.GetRomHeader(e);
@@ -41,7 +46,6 @@ public class OoTOnline : IBootstrapFilter
     public static void OnTick(EventNewFrame e)
     {
         if (Core.helper.isTitleScreen() || Core.helper.isPaused()) return;
-        //ModLoader.API.NetworkSenders.Client.SendPacket();
     }
 
     [EventHandler(NetworkEvents.CLIENT_ON_NETWORK_LOBBY_JOIN)]

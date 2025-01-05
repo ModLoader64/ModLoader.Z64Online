@@ -35,9 +35,5 @@ public class MMOnline : IBootstrapFilter
     [OnViUpdate]
     public static void OnViUpdate(EventNewVi e)
     {
-        if (ImGui.Begin("MMOnline"))
-        {
-
-        }
     }
 }

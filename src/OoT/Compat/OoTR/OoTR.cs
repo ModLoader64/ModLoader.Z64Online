@@ -1,12 +1,10 @@
 ﻿using Microsoft.Win32.SafeHandles;
-using ModLoader.Core;
 using ModLoader.OotR.Sigs;
 using OoT;
 using OoT.API;
 using System.Formats.Tar;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
-using static NuGet.Packaging.PackagingConstants;
 using Buffer = NodeBuffer.Buffer;
 
 namespace Z64Online.OoTOnline
